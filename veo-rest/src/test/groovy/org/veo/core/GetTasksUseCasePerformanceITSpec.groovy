@@ -124,6 +124,7 @@ class GetTasksUseCasePerformanceITSpec extends AbstractPerformanceITSpec {
                             TypedId.from(domain),
                             TypedId.from(unit),
                             null,
+                            null,
                             PagingConfiguration.unpaged(TaskQuery.SortCriterion.DEADLINE)
                             ),
                     NoRestrictionAccessRight.from(client.getId().toString()))
@@ -135,6 +136,7 @@ class GetTasksUseCasePerformanceITSpec extends AbstractPerformanceITSpec {
         then: "relations have been loaded"
         tasks.size() == riCount
         tasks*.assignee()*.name =~ (0..<riCount).collect{"responsible $it"}
+        tasks*.element()*.name =~ (0..<assetCount).collect{"asset $it"}
         with(tasks*.requirementImplementation()) {
             it*.control*.name =~ (0..<controlCount).collect{"control $it"}
             it*.origin*.name =~ (0..<assetCount).collect{"asset $it"}
@@ -150,7 +152,7 @@ class GetTasksUseCasePerformanceITSpec extends AbstractPerformanceITSpec {
         }
 
         and:
-        queryCounts.select == 6
+        queryCounts.select == 7
         queryCounts.insert == 0
         queryCounts.update == 0
         queryCounts.delete == 0

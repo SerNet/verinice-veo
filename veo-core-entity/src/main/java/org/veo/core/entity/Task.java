@@ -24,10 +24,13 @@ import jakarta.validation.constraints.NotNull;
 import javax.annotation.Nullable;
 
 import org.veo.core.entity.compliance.RequirementImplementation;
+import org.veo.core.entity.inspection.Severity;
 
 public record Task(
     @NotNull TaskType type,
     @Nullable Person assignee,
     @Nullable LocalDate deadline,
-    // TODO #5090 introduce subclass for RI-based tasks
-    @Nullable RequirementImplementation requirementImplementation) {}
+    @Nullable RequirementImplementation requirementImplementation,
+    @Nullable Element element,
+    @Nullable Severity severity,
+    @Nullable TranslatedText summary) {}

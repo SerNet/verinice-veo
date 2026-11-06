@@ -25,10 +25,14 @@ import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.UserAccessRights
 import org.veo.core.entity.Domain
+import org.veo.core.entity.Person
 import org.veo.core.entity.Task
 import org.veo.core.entity.TaskType
+import org.veo.core.entity.TranslatedText
 import org.veo.core.entity.Unit
 import org.veo.core.entity.compliance.ImplementationStatus
+import org.veo.core.entity.inspection.Severity
+import org.veo.core.entity.ref.TypedId
 import org.veo.core.repository.PagedResult
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.TaskQuery
@@ -36,6 +40,7 @@ import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.ControlDataRepository
 import org.veo.persistence.access.jpa.DomainDataRepository
+import org.veo.persistence.access.jpa.InspectionFindingDataRepository
 import org.veo.persistence.access.jpa.PersonDataRepository
 import org.veo.persistence.access.jpa.RequirementImplementationDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
@@ -61,6 +66,8 @@ class TaskQuerySpec extends AbstractJpaSpec {
     PersonDataRepository personDataRepository
     @Autowired
     RequirementImplementationDataRepository riDataRepository
+    @Autowired
+    InspectionFindingDataRepository inspectionFindingDataRepository
     @Autowired
     TransactionTemplate txTemplate
     @Autowired
@@ -178,33 +185,127 @@ class TaskQuerySpec extends AbstractJpaSpec {
 
                 with(resultPage()[0]) {
                     type() == TaskType.REQUIREMENT_IMPLEMENTATION
+                    element().name == "servicable"
                     requirementImplementation().origin.name == "servicable"
                     requirementImplementation().control.name == "control a"
                     assignee().name == "person a"
                 }
                 with(resultPage()[1]) {
                     type() == TaskType.REQUIREMENT_IMPLEMENTATION
+                    element().name == "servicable"
                     requirementImplementation().origin.name == "servicable"
                     requirementImplementation().control.name == "control b"
                     assignee() == null
                 }
                 with(resultPage()[2]) {
                     type() == TaskType.REQUIREMENT_IMPLEMENTATION
+                    element().name == "processional"
                     requirementImplementation().origin.name == "processional"
                     requirementImplementation().control.name == "control a"
                     assignee().name == "person a"
                 }
                 with(resultPage()[3]) {
                     type() == TaskType.REQUIREMENT_IMPLEMENTATION_REVISION
+                    element().name == "servicable"
                     requirementImplementation().origin.name == "servicable"
                     requirementImplementation().control.name == "control c"
                     assignee().name == "person b"
                 }
                 with(resultPage()[4]) {
                     type() == TaskType.REQUIREMENT_IMPLEMENTATION
+                    element().name == "servicable"
                     requirementImplementation().origin.name == "servicable"
                     requirementImplementation().control.name == "control e"
                     assignee().name == "person b"
+                }
+            }
+        }
+    }
+
+    def "fetch tasks for inspection findings"() {
+        given:
+        Person personA
+        txTemplate.execute {
+            personA = personDataRepository.save(newPerson(unit) {
+                name = 'person a'
+                associateWithDomain(domain, "Programmer", "CODING")
+            })
+            def personB = personDataRepository.save(newPerson(unit) {
+                name = 'person b'
+                associateWithDomain(domain, "Programmer", "CODING")
+            })
+
+            def processA = processDataRepository.save(newProcess(unit) {
+                name = "process a"
+                associateWithDomain(domain, "BusinessProcess", "NEW")
+            })
+            def processB = processDataRepository.save(newProcess(unit) {
+                name = "process b"
+                associateWithDomain(domain, "BusinessProcess", "NEW")
+            })
+            processDataRepository.save(newProcess(unit) {
+                name = "process c"
+                associateWithDomain(domain, "BusinessProcess", "NEW")
+            })
+
+            inspectionFindingDataRepository.save(newInspectionFinding(processA, domain) {
+                severity = Severity.HINT
+                taskSummary = TranslatedText.of{"check out process a hint"}
+                responsible = personA
+            })
+            inspectionFindingDataRepository.save(newInspectionFinding(processA, domain) {
+                severity = Severity.ERROR
+                taskSummary = TranslatedText.of{
+                    "fix process a error"
+                }
+            })
+            inspectionFindingDataRepository.save(newInspectionFinding(processB, domain) {
+                severity = Severity.WARNING
+                taskSummary = TranslatedText.of{"fix process b warning"}
+                responsible = personB
+            })
+
+            expect:
+            with(query()) {
+                totalResults() == 3
+                totalPages() == 1
+                resultPage()*.severity == [
+                    Severity.ERROR,
+                    Severity.WARNING,
+                    Severity.HINT,
+                ]
+
+                with(resultPage()[0]) {
+                    type() == TaskType.INSPECTION_FINDING
+                    element().name == "process a"
+                    summary().translations[EN] == "fix process a error"
+                    assignee() == null
+                }
+                with(resultPage()[1]) {
+                    type() == TaskType.INSPECTION_FINDING
+                    element().name == "process b"
+                    assignee().name == "person b"
+                    summary().translations[EN] == "fix process b warning"
+                }
+                with(resultPage()[2]) {
+                    type() == TaskType.INSPECTION_FINDING
+                    element().name == "process a"
+                    summary().translations[EN] == "check out process a hint"
+                    assignee().name == "person a"
+                }
+            }
+
+            and:
+            with(query(unit, domain) {
+                it.whereAssigneeIn([TypedId.from(personA)] as Set)
+            }) {
+                totalResults() == 1
+                totalPages() == 1
+                with(resultPage()[0]) {
+                    type() == TaskType.INSPECTION_FINDING
+                    element().name == "process a"
+                    summary().translations[EN] == "check out process a hint"
+                    assignee().name == "person a"
                 }
             }
         }
@@ -231,6 +332,7 @@ class TaskQuerySpec extends AbstractJpaSpec {
                     nextRevisionDate = LocalDate.now()
                 }
             })
+            inspectionFindingDataRepository.save(newInspectionFinding(asset, domain))
         }
 
         expect:
@@ -251,11 +353,13 @@ class TaskQuerySpec extends AbstractJpaSpec {
         with(query(unit, domain) {
             it.whereTypeIn([
                 TaskType.REQUIREMENT_IMPLEMENTATION,
+                TaskType.INSPECTION_FINDING
             ] as Set)
         }) {
-            totalResults() == 1
+            totalResults() == 2
             resultPage()*.type() ==~ [
                 TaskType.REQUIREMENT_IMPLEMENTATION,
+                TaskType.INSPECTION_FINDING
             ]
         }
     }
@@ -273,6 +377,7 @@ class TaskQuerySpec extends AbstractJpaSpec {
                 associateWithDomain(domain, "Server", "NEW")
                 implementControl(control1)
             })
+            inspectionFindingDataRepository.save(newInspectionFinding(control1, domain))
 
             unit2 = unitRepository.save(newUnit(client) {
                 name = "unit 2"
@@ -286,18 +391,33 @@ class TaskQuerySpec extends AbstractJpaSpec {
                 associateWithDomain(domain, "Server", "NEW")
                 implementControl(control2)
             })
+            inspectionFindingDataRepository.save(newInspectionFinding(control2, domain))
         }
 
         expect:
         with(query(unit)) {
-            totalResults() == 1
-            resultPage()*.requirementImplementation()*.origin*.name == ["asset 1"]
-            resultPage()*.requirementImplementation()*.control*.name == ["control 1"]
+            totalResults() == 2
+            with(resultPage()[0]) {
+                type() == TaskType.REQUIREMENT_IMPLEMENTATION
+                element().name == "asset 1"
+                requirementImplementation().control.name == "control 1"
+            }
+            with(resultPage()[1]) {
+                type() == TaskType.INSPECTION_FINDING
+                element().name == "control 1"
+            }
         }
         with(query(unit2)) {
-            totalResults() == 1
-            resultPage()*.requirementImplementation()*.origin*.name == ["asset 2"]
-            resultPage()*.requirementImplementation()*.control*.name == ["control 2"]
+            totalResults() == 2
+            with(resultPage()[0]) {
+                type() == TaskType.REQUIREMENT_IMPLEMENTATION
+                element().name == "asset 2"
+                requirementImplementation().control.name == "control 2"
+            }
+            with(resultPage()[1]) {
+                type() == TaskType.INSPECTION_FINDING
+                element().name == "control 2"
+            }
         }
     }
 
@@ -320,6 +440,9 @@ class TaskQuerySpec extends AbstractJpaSpec {
                 associateWithDomain(domain2, "TOM", "NEW")
             })
 
+            inspectionFindingDataRepository.save(newInspectionFinding(control1, domain))
+            inspectionFindingDataRepository.save(newInspectionFinding(control2, domain2))
+
             assetDataRepository.save(newAsset(unit) {
                 name = "asset"
                 associateWithDomain(domain, "Server", "NEW")
@@ -331,14 +454,28 @@ class TaskQuerySpec extends AbstractJpaSpec {
 
         expect:
         with(query(unit, domain)) {
-            totalResults() == 1
-            resultPage()*.requirementImplementation()*.origin*.name == ["asset"]
-            resultPage()*.requirementImplementation()*.control*.name == ["control 1"]
+            totalResults() == 2
+            with(resultPage()[0]) {
+                type() == TaskType.REQUIREMENT_IMPLEMENTATION
+                element().name == "asset"
+                requirementImplementation().control.name == "control 1"
+            }
+            with(resultPage()[1]) {
+                type() == TaskType.INSPECTION_FINDING
+                element().name == "control 1"
+            }
         }
         with(query(unit, domain2)) {
-            totalResults() == 1
-            resultPage()*.requirementImplementation()*.origin*.name == ["asset"]
-            resultPage()*.requirementImplementation()*.control*.name == ["control 2"]
+            totalResults() == 2
+            with(resultPage()[0]) {
+                type() == TaskType.REQUIREMENT_IMPLEMENTATION
+                element().name == "asset"
+                requirementImplementation().control.name == "control 2"
+            }
+            with(resultPage()[1]) {
+                type() == TaskType.INSPECTION_FINDING
+                element().name == "control 2"
+            }
         }
     }
 
@@ -349,7 +486,7 @@ class TaskQuerySpec extends AbstractJpaSpec {
             UserAccessRights rights = NoRestrictionAccessRight.from(client.idAsString),
             PagingConfiguration<TaskQuery.SortCriterion> paging = PagingConfiguration.unpaged(TaskQuery.SortCriterion.DEADLINE)) {
         txTemplate.execute {
-            new TaskQueryImpl(em, personDataRepository, riDataRepository, rights, domain, unit)
+            new TaskQueryImpl(em, elementDataRepository, personDataRepository, riDataRepository, rights, domain, unit)
                     .tap{applyFilters.accept(it)}
                     .execute(paging)
         }

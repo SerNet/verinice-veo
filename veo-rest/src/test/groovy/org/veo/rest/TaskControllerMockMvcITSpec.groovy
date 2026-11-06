@@ -27,10 +27,15 @@ import org.springframework.web.bind.MissingServletRequestParameterException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.ElementType
 import org.veo.core.entity.Person
+import org.veo.core.entity.TaskConfiguration
+import org.veo.core.entity.TranslatedText
 import org.veo.core.entity.Unit
 import org.veo.core.entity.compliance.ImplementationStatus
+import org.veo.core.entity.condition.ConstantExpression
 import org.veo.core.entity.exception.NotFoundException
+import org.veo.core.repository.InspectionFindingRepository
 import org.veo.core.usecase.TemplateItems
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -58,6 +63,9 @@ class TaskControllerMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     private DomainRepositoryImpl domainRepository
+
+    @Autowired
+    private InspectionFindingRepository inspectionFindingRepository
 
     @Autowired
     TransactionTemplate txTemplate
@@ -266,6 +274,53 @@ class TaskControllerMockMvcITSpec extends VeoMvcSpec {
                 requirementImplementation.origin.name == "way big machine"
                 requirementImplementation.control.name == "control b"
                 assignee == null
+            }
+        }
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "fetch inspection tasks"() {
+        given:
+        txTemplate.execute {
+            testDomain.applyInspection("check", newInspection {
+                elementType = ElementType.ASSET
+                condition = new ConstantExpression(true)
+            })
+            testDomain.taskConfiguration = new TaskConfiguration([
+                check: new TaskConfiguration.InspectionTaskTemplate(
+                        TranslatedText.of {"check that asset"},
+                        "admin"
+                        )
+            ])
+            domainDataRepository.save(testDomain)
+            def person = personRepository.save(newPerson(unit) {
+                name = 'admin'
+                username = "my@persona.example"
+                associateWithDomain(testDomain, "Programmer", "CODING")
+            })
+            assetRepository.save(newAsset(unit) {
+                name = "süßtem"
+                associateWithDomain(testDomain, "Server", "NEW")
+                addLink(newCustomLink(person, "admin", testDomain))
+            })
+            inspectionFindingRepository.updateInspections(testDomain, false)
+        }
+
+        expect:
+        with(parseJson(get("/domains/${testDomain.id}/tasks?unit=${unit.id}"))) {
+            totalItemCount == 1
+            page == 0
+            pageCount == 1
+            items*.deadline == [
+                null
+            ]
+
+            with(items[0]) {
+                type == "inspection-finding"
+                assignee.name == "admin"
+                element.name == "süßtem"
+                severity == "HINT"
+                summary.en == "check that asset"
             }
         }
     }

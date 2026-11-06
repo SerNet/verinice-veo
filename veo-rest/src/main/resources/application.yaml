@@ -45,6 +45,8 @@ veo:
     max-neighbors: 30
   attribute-values:
     max-results: 100
+  inspection-tasks:
+    enabled: false
 
 spring:
   data:

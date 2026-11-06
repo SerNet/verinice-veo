@@ -26,4 +26,6 @@ public enum TaskType {
   REQUIREMENT_IMPLEMENTATION,
   @JsonProperty(RequirementImplementation.SINGULAR_TERM + "-revision")
   REQUIREMENT_IMPLEMENTATION_REVISION,
+  @JsonProperty("inspection-finding")
+  INSPECTION_FINDING,
 }
