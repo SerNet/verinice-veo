@@ -17,6 +17,8 @@
  */
 package org.veo.persistence.entity.jpa
 
+import org.hibernate.Hibernate
+import org.hibernate.proxy.HibernateProxy
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.support.TransactionTemplate
 
@@ -28,6 +30,9 @@ import org.veo.persistence.access.jpa.CatalogItemDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.DomainDataRepository
 
+import jakarta.persistence.EntityManager
+import jakarta.validation.Validation
+
 class CatalogItemJpaSpec extends AbstractJpaSpec{
     @Autowired
     ClientDataRepository clientRepository
@@ -37,6 +42,8 @@ class CatalogItemJpaSpec extends AbstractJpaSpec{
     CatalogItemDataRepository catalogItemRepository
     @Autowired
     TransactionTemplate txTemplate
+    @Autowired
+    EntityManager em
 
     Client client
     Domain domain
@@ -85,5 +92,23 @@ class CatalogItemJpaSpec extends AbstractJpaSpec{
 
         where:
         type << TailoringReferenceType.values()
+    }
+
+    def "an initialized catalog item proxy passes validation"() {
+        given: "a persisted catalog item that is only known as a reference"
+        def itemId = catalogItemRepository.save(newCatalogItem(domain) {
+            name = "item"
+            elementType = ElementType.ASSET
+            subType = "assetoBalsamico"
+            status = "delicious"
+        }).id
+        em.flush()
+        em.clear()
+        def proxy = em.getReference(CatalogItemData, itemId)
+        Hibernate.initialize(proxy)
+
+        expect:
+        proxy instanceof HibernateProxy
+        Validation.buildDefaultValidatorFactory().validator.validate(proxy).empty
     }
 }

@@ -56,6 +56,7 @@ import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.persistence.entity.jpa.transformer.IdentifiableDataFactory;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.ToString;
 
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
@@ -71,7 +72,9 @@ public abstract class TemplateItemData<
   @Column(name = "db_id")
   private UUID id;
 
-  @NotNull @ToString.Include private UUID symbolicDbId;
+  @Getter(onMethod_ = @NotNull)
+  @ToString.Include
+  private UUID symbolicDbId;
 
   @Override
   public UUID getSymbolicId() {
@@ -88,7 +91,7 @@ public abstract class TemplateItemData<
     symbolicDbId = symbolicId;
   }
 
-  @NotNull
+  @Getter(onMethod_ = @NotNull)
   @Column(name = "name")
   @ToString.Include
   protected String name;
@@ -99,17 +102,17 @@ public abstract class TemplateItemData<
   @Column(name = "description", length = Nameable.DESCRIPTION_MAX_LENGTH)
   protected String description;
 
-  @NotNull
+  @Getter(onMethod_ = @NotNull)
   @Column(name = "elementtype")
   @Enumerated
   @JdbcType(PostgreSQLEnumJdbcType.class)
   protected ElementType elementType;
 
-  @NotNull
+  @Getter(onMethod_ = @NotNull)
   @Column(name = "subtype")
   protected String subType;
 
-  @NotNull
+  @Getter(onMethod_ = @NotNull)
   @Column(name = "status")
   protected String status;
 
