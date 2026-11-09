@@ -163,7 +163,7 @@ subprojects {
         implementation platform('com.fasterxml.jackson:jackson-bom:2.22.4')
         implementation platform('tools.jackson:jackson-bom:3.2.4')
         constraints {
-            implementation 'com.rabbitmq:amqp-client:5.37.0'
+            implementation 'com.rabbitmq:amqp-client:5.37.1'
         }
 
         compileOnly 'org.slf4j:slf4j-api'
