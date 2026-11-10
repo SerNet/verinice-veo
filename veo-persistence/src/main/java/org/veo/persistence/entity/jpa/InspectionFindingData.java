@@ -20,6 +20,7 @@ package org.veo.persistence.entity.jpa;
 import java.util.Objects;
 import java.util.UUID;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
@@ -61,7 +62,11 @@ public class InspectionFindingData {
   @JoinColumn(name = "element_id")
   private Element element;
 
-  @ManyToOne(fetch = FetchType.LAZY, targetEntity = DomainData.class, optional = false)
+  @ManyToOne(
+      fetch = FetchType.LAZY,
+      targetEntity = DomainData.class,
+      optional = false,
+      cascade = CascadeType.PERSIST)
   @JoinColumn(name = "domain_id")
   private Domain domain;
 

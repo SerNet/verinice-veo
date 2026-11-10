@@ -292,7 +292,7 @@ class TaskControllerMockMvcITSpec extends VeoMvcSpec {
                         "admin"
                         )
             ])
-            domainDataRepository.save(testDomain)
+            testDomain = domainDataRepository.save(testDomain)
             def person = personRepository.save(newPerson(unit) {
                 name = 'admin'
                 username = "my@persona.example"

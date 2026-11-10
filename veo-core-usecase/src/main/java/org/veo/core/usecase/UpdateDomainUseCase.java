@@ -56,7 +56,8 @@ public class UpdateDomainUseCase
         domainTemplateService.createDomain(oldDomain.getOwner(), input.domainTemplateId);
     domainChangeService.transferCustomization(oldDomain, newDomain);
     var units = unitRepository.findByDomain(oldDomain.getId());
-    unitMigrationService.updateElements(oldDomain, newDomain, userAccessRights.getUsername());
+    var migratedElements =
+        unitMigrationService.updateElements(oldDomain, newDomain, userAccessRights.getUsername());
     units.forEach(u -> {
       u.addToDomains(newDomain);
       u.removeFromDomains(oldDomain);
@@ -72,7 +73,8 @@ public class UpdateDomainUseCase
     messageCreator.createDomainCreationMessage(newDomain);
     oldDomain.setActive(false);
 
-    inspectionFindingRepository.updateInspections(newDomain, false);
+    migratedElements.forEach(
+        element -> inspectionFindingRepository.updateInspections(element, newDomain, false));
 
     return new OutputData(newDomain);
   }

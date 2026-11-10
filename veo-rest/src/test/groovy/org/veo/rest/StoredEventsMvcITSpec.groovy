@@ -27,7 +27,9 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.ElementType
 import org.veo.core.entity.TailoringReferenceType
+import org.veo.core.entity.TranslatedText
 import org.veo.core.entity.Unit
+import org.veo.core.entity.condition.ConstantExpression
 import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.DocumentRepository
@@ -279,6 +281,42 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             clientId == owner.client.id.toString()
             domainTemplateId == owner.DSGVO_DOMAINTEMPLATE_V2_UUID.toString()
         }
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "a domain update generates one revision per element if the new domain has inspections"() {
+        given:
+        def oldDomainId = executeInTransaction {
+            def oldDomain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
+            unit.addToDomains(oldDomain)
+            unit = unitRepository.save(unit)
+            createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_V2_UUID)
+            domainTemplateRepository.findById(DSGVO_DOMAINTEMPLATE_V2_UUID).get().with {
+                // applies to every element
+                applyInspection("always-hint", newInspection {
+                    condition = new ConstantExpression(true)
+                    description = TranslatedText.of { "check this" }
+                })
+                domainTemplateRepository.save(it)
+            }
+            client = clientRepository.save(client)
+            oldDomain.id.toString()
+        }
+        def assetId = parseJson(post("/domains/$oldDomainId/assets", [
+            name: "my asset",
+            subType: "AST_Datatype",
+            status: "NEW",
+            owner: [targetUri: "/units/${unit.id}"]
+        ])).resourceId
+
+        when: "updating to the new domain template"
+        def newDomainId = parseJson(post("/domains/$oldDomainId/update?template=$DSGVO_DOMAINTEMPLATE_V2_UUID", null)).resourceId
+        def revisions = getEntityRevisions("/assets/$assetId")
+
+        then: "the domain update is recorded exactly once"
+        revisions*.type == ["CREATION", "MODIFICATION"]
+        revisions*.changeNumber == [0, 1]
+        revisions.last().content.domains.keySet() ==~ [newDomainId]
     }
 
     @WithUserDetails("user@domain.example")
@@ -571,6 +609,23 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
 
         then: "no event is stored"
         storedEventRepository.findAll().size() == numberOfStoredEventsBefore
+    }
+
+    private List<Object> getEntityRevisions(String uri) {
+        storedEventRepository
+                .findAll()
+                .findAll {
+                    it.routingKey.endsWith("entity_revision")
+                }
+                .sort {
+                    it.id
+                }
+                .collect {
+                    parseJson(it.content)
+                }
+                .findAll {
+                    it.uri == uri
+                }
     }
 
     private Object getLatestStoredEventContent(String routingKey = "") {

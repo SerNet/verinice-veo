@@ -43,7 +43,7 @@ public class MigrationService {
   private final Decider decider;
   private final MessageCreator messageCreator;
 
-  public void updateElements(Domain oldDomain, Domain newDomain, String username)
+  public List<Element> updateElements(Domain oldDomain, Domain newDomain, String username)
       throws DomainUpdateFailedException {
 
     log.info(
@@ -100,5 +100,6 @@ public class MigrationService {
               e.getUpdatedAt(),
               e.nextChangeNumberForUpdate()));
     });
+    return elements;
   }
 }
