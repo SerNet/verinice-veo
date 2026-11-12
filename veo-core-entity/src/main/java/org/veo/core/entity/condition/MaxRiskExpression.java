@@ -19,6 +19,7 @@ package org.veo.core.entity.condition;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.Set;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
@@ -27,6 +28,8 @@ import org.veo.core.entity.ElementType;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
+import org.veo.core.entity.event.RiskChangedEvent;
+import org.veo.core.entity.event.RiskEvent;
 import org.veo.core.entity.risk.DeterminedRisk;
 import org.veo.core.entity.risk.RiskRef;
 import org.veo.core.entity.type.VeoType;
@@ -39,6 +42,12 @@ import lombok.Data;
  */
 @Data
 public class MaxRiskExpression implements VeoExpression {
+  private static final Set<RiskEvent.ChangedValues> RELEVANT_CHANGES =
+      Set.of(
+          RiskEvent.ChangedValues.RISK_CREATED,
+          RiskEvent.ChangedValues.RISK_VALUES_CHANGED,
+          RiskEvent.ChangedValues.RISK_DELETED);
+
   @Override
   public Object getValue(Element element, Domain domain) {
     if (element instanceof RiskAffected) {
@@ -51,7 +60,9 @@ public class MaxRiskExpression implements VeoExpression {
   public boolean isAffectedByEvent(ElementEvent event, Domain domain) {
     if (event instanceof RiskAffectingElementChangeEvent elementRiskEvent) {
       return elementRiskEvent.getChangedRisks().stream()
-          .anyMatch(riskChangedEvent -> riskChangedEvent.shouldReevaluate(domain));
+          .map(RiskChangedEvent::getChanges)
+          .flatMap(Set::stream)
+          .anyMatch(RELEVANT_CHANGES::contains);
     }
     return false;
   }

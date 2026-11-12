@@ -42,6 +42,9 @@ import org.veo.core.entity.definitions.attribute.ListAttributeDefinition
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.entity.event.ElementEvent
 import org.veo.core.entity.event.InboundLinkEvent
+import org.veo.core.entity.event.RiskAffectingElementChangeEvent
+import org.veo.core.entity.event.RiskChangedEvent
+import org.veo.core.entity.event.RiskEvent
 import org.veo.core.entity.risk.CategoryRef
 import org.veo.core.entity.risk.ImpactRef
 import org.veo.core.entity.risk.ImpactValues
@@ -1068,6 +1071,67 @@ class VeoExpressionITSpec extends Specification {
         then:
         def ex = thrown(IllegalArgumentException)
         ex.message == "cannot determine potential impacts: expected Asset|Process|Scope, got Document"
+    }
+
+    def "max risk should be reevaluated after #changes"() {
+        given:
+        def exp = new MaxRiskExpression()
+        def event = Mock(RiskAffectingElementChangeEvent) {
+            changedRisks >> [
+                Mock(RiskChangedEvent) {
+                    it.changes >> changes
+                }
+            ]
+        }
+
+        expect:
+        exp.isAffectedByEvent(event, Mock(Domain))
+
+        where:
+        changes << [
+            [
+                RiskEvent.ChangedValues.RISK_CREATED
+            ],
+            [
+                RiskEvent.ChangedValues.RISK_VALUES_CHANGED
+            ],
+            [
+                RiskEvent.ChangedValues.RISK_DELETED
+            ],
+            [
+                RiskEvent.ChangedValues.PROBABILITY_VALUES_CHANGED,
+                RiskEvent.ChangedValues.RISK_VALUES_CHANGED
+            ],
+        ]
+    }
+
+    def "max risk should not be reevaluated after #changes"() {
+        given:
+        def exp = new MaxRiskExpression()
+        def event = Mock(RiskAffectingElementChangeEvent) {
+            changedRisks >> [
+                Mock(RiskChangedEvent) {
+                    it.changes >> changes
+                }
+            ]
+        }
+
+        expect:
+        !exp.isAffectedByEvent(event, Mock(Domain))
+
+        where:
+        changes << [
+            [
+                RiskEvent.ChangedValues.IMPACT_VALUES_CHANGED
+            ],
+            [
+                RiskEvent.ChangedValues.PROBABILITY_VALUES_CHANGED
+            ],
+            [
+                RiskEvent.ChangedValues.PROBABILITY_VALUES_CHANGED,
+                RiskEvent.ChangedValues.IMPACT_VALUES_CHANGED
+            ],
+        ]
     }
 
     def "control implementations can be evaluated"() {
