@@ -20,6 +20,7 @@ package org.veo.core.entity.condition
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Element
 import org.veo.core.entity.ElementType
+import org.veo.core.entity.event.ElementEvent
 import org.veo.core.entity.type.VeoType as T
 
 import spock.lang.Specification
@@ -115,5 +116,32 @@ class TernaryExpressionSpec extends Specification {
         thenValueType | elseValueType
         T.integer()   | T.string()
         T.string()    | T.listOf(T.string())
+    }
+
+    def "sub expressions are considered when handling events"() {
+        given:
+        def domain = Mock(Domain) {}
+        def event = Mock(ElementEvent)
+        def exp = new TernaryExpression(
+                Mock(CustomAspectAttributeValueExpression) {
+                    isAffectedByEvent(event, domain) >> inputsAffected[0]
+                },
+                Mock(ConstantExpression) {
+                    isAffectedByEvent(event, domain) >> inputsAffected[1]
+                },
+                Mock(ConstantExpression) {
+                    isAffectedByEvent(event, domain) >> inputsAffected[2]
+                },
+        )
+
+        expect:
+        exp.isAffectedByEvent(event, domain) == inputsAffected.any{it}
+
+        where:
+        inputsAffected << [
+            [false, true],
+            [false, true],
+            [false, true]
+        ].combinations()
     }
 }

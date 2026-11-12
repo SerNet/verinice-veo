@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.CompositeElement;
-import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
@@ -65,7 +64,7 @@ public class PartCountExpression implements VeoExpression {
 
   @Override
   public boolean isAffectedByEvent(ElementEvent event, Domain domain) {
-    return event instanceof ControlPartsChangedEvent && event.getEntityType().equals(Control.class);
+    return event instanceof ControlPartsChangedEvent;
   }
 
   @Override

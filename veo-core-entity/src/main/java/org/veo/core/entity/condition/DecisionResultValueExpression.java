@@ -29,6 +29,7 @@ import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.decision.DecisionRef;
+import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.type.VeoType;
 
@@ -53,6 +54,11 @@ public class DecisionResultValueExpression implements VeoExpression {
       return null;
     }
     return result.getValue();
+  }
+
+  @Override
+  public boolean isAffectedByEvent(ElementEvent event, Domain domain) {
+    return domain.getDecision(decision.getKeyRef()).isAffectedByEvent(event, domain);
   }
 
   @Override

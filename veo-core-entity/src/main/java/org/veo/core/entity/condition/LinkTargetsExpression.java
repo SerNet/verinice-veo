@@ -33,6 +33,7 @@ import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.definitions.LinkDefinition;
+import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.state.ElementTypeDefinitionState;
 import org.veo.core.entity.type.VeoType;
 
@@ -65,6 +66,11 @@ public class LinkTargetsExpression implements VeoExpression {
           .collect(Collectors.toSet());
     }
     return new HashSet<>();
+  }
+
+  @Override
+  public boolean isAffectedByEvent(ElementEvent event, Domain domain) {
+    return sources.isAffectedByEvent(event, domain);
   }
 
   @Override

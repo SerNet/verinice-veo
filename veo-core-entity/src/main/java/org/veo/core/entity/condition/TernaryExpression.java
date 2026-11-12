@@ -17,12 +17,15 @@
  */
 package org.veo.core.entity.condition;
 
+import java.util.stream.Stream;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
+import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.type.VeoType;
 
 import lombok.AccessLevel;
@@ -52,6 +55,12 @@ public class TernaryExpression implements VeoExpression {
     } else {
       return elseValue.getValue(element, domain);
     }
+  }
+
+  @Override
+  public boolean isAffectedByEvent(ElementEvent event, Domain domain) {
+    return Stream.of(condition, thenValue, elseValue)
+        .anyMatch(e -> e.isAffectedByEvent(event, domain));
   }
 
   @Override

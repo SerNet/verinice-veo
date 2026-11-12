@@ -22,6 +22,9 @@ import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.RiskAffected;
+import org.veo.core.entity.event.ElementEvent;
+import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
+import org.veo.core.entity.event.RiskEvent;
 import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.ImpactValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
@@ -39,6 +42,12 @@ public class PotentialImpactsCompleteExpression implements VeoExpression {
           .allMatch(rd -> isComplete(ra, domain, rd));
     }
     return false;
+  }
+
+  @Override
+  public boolean isAffectedByEvent(ElementEvent event, Domain domain) {
+    return event instanceof RiskAffectingElementChangeEvent re
+        && re.getChanges().contains(RiskEvent.ChangedValues.IMPACT_VALUES_CHANGED);
   }
 
   private static boolean isComplete(RiskAffected<?, ?> element, Domain domain, RiskDefinition rd) {

@@ -25,6 +25,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
+import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.type.VeoType;
 
 import lombok.AccessLevel;
@@ -47,6 +48,11 @@ public class RemoveExpression implements VeoExpression {
         .map(List.class::cast)
         .map(l -> l.stream().filter(it -> !Objects.equals(it, val)).toList())
         .orElse(null);
+  }
+
+  @Override
+  public boolean isAffectedByEvent(ElementEvent event, Domain domain) {
+    return from.isAffectedByEvent(event, domain) || value.isAffectedByEvent(event, domain);
   }
 
   @Override

@@ -19,6 +19,7 @@ package org.veo.core.entity.condition
 
 import org.veo.core.entity.Domain
 import org.veo.core.entity.ElementType
+import org.veo.core.entity.event.ElementEvent
 import org.veo.core.entity.type.VeoType as T
 
 import spock.lang.Specification
@@ -104,5 +105,29 @@ class EqualsExpressionSpec extends Specification {
         T.integer().orNothing()       | T.string()  | "given values cannot be equal: Integer|Null does not intersect with String"
         T.sumOf(T.bool(), T.string()) | T.number()  | "given values cannot be equal: Boolean|String does not intersect with BigDecimal|Integer|Long"
         T.listOf(T.integer())         | T.integer() | "given values cannot be equal: List<Integer> does not intersect with Integer"
+    }
+
+    def "sub expressions are considered when handling events"() {
+        given:
+        def domain = Mock(Domain) {}
+        def event = Mock(ElementEvent)
+        def exp = new EqualsExpression(
+                Mock(CustomAspectAttributeValueExpression) {
+                    isAffectedByEvent(event, domain) >> left
+                },
+                Mock(ConstantExpression) {
+                    isAffectedByEvent(event, domain) >> right
+                },
+        )
+
+        expect:
+        exp.isAffectedByEvent(event, domain) == affected
+
+        where:
+        left  | right | affected
+        false | false | false
+        false | true  | true
+        true  | false | true
+        true  | true  | true
     }
 }

@@ -24,6 +24,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
+import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.type.VeoType;
 
 import lombok.AccessLevel;
@@ -44,6 +45,11 @@ public class AndExpression implements VeoExpression {
   @Override
   public Object getValue(Element element, Domain domain) {
     return operands.stream().allMatch(o -> Objects.equals(o.getValue(element, domain), true));
+  }
+
+  @Override
+  public boolean isAffectedByEvent(ElementEvent event, Domain domain) {
+    return operands.stream().anyMatch(o -> o.isAffectedByEvent(event, domain));
   }
 
   @Override

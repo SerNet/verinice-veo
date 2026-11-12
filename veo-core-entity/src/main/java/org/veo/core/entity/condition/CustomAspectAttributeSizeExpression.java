@@ -25,6 +25,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
+import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.type.VeoType;
 
 import lombok.AccessLevel;
@@ -59,6 +60,11 @@ public class CustomAspectAttributeSizeExpression implements VeoExpression {
         String.format(
             "Cannot determine size for custom aspect %s attribute %s because the value is not a collection",
             customAspectType, attributeType));
+  }
+
+  @Override
+  public boolean isAffectedByEvent(ElementEvent event, Domain domain) {
+    return false;
   }
 
   @Override

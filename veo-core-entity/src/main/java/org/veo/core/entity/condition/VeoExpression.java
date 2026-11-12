@@ -128,9 +128,7 @@ public interface VeoExpression {
   Object getValue(Element element, Domain domain);
 
   /** Determines whether this provider may yield a different value after given event. */
-  default boolean isAffectedByEvent(ElementEvent event, Domain domain) {
-    return false;
-  }
+  boolean isAffectedByEvent(ElementEvent event, Domain domain);
 
   /**
    * @throws RuntimeException If this provider is invalid for given domain & element type

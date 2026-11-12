@@ -22,6 +22,7 @@ import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.type.VeoType;
 
@@ -35,6 +36,11 @@ public class RiskDefinitionExpression implements VeoExpression {
       return scope.getRiskDefinition(domain).map(RiskDefinitionRef::getIdRef).orElse(null);
     }
     return null;
+  }
+
+  @Override
+  public boolean isAffectedByEvent(ElementEvent event, Domain domain) {
+    return false;
   }
 
   @Override

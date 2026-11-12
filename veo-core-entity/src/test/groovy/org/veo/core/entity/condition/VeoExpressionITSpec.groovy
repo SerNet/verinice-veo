@@ -642,6 +642,7 @@ class VeoExpressionITSpec extends Specification {
         exp.selfValidate(domain, ElementType.PROCESS)
         exp.getValueType(domain, ElementType.PROCESS) == T.durationString().orNothing()
         exp.getValue(process, domain) == "PT20H"
+        exp.isAffectedByEvent(new InboundLinkEvent(process, domain, "workedOn", InboundLinkEvent.Operation.CREATION_OR_UPDATE, this), domain)
     }
 
     def "minimum outbound link attribute is determined"() {
@@ -1039,12 +1040,18 @@ class VeoExpressionITSpec extends Specification {
                 Optional.ofNullable(impactValues[rd.idRef])
             }
         }
+        def impactEvent = Mock(RiskAffectingElementChangeEvent) {
+            changes >> [
+                RiskEvent.ChangedValues.IMPACT_VALUES_CHANGED
+            ]
+        }
         def exp = new PotentialImpactsCompleteExpression()
 
         expect:
         exp.selfValidate(domain, ElementType.ASSET)
         exp.getValueType(domain, ElementType.ASSET) == T.bool()
         exp.getValue(asset, domain) == expected
+        exp.isAffectedByEvent(impactEvent, domain)
 
         where:
         impactValues                                                                       | expected

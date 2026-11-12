@@ -21,6 +21,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
+import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.type.VeoType;
 
 import lombok.AccessLevel;
@@ -38,6 +39,11 @@ public class ConstantExpression implements VeoExpression {
   @Override
   public Object getValue(Element element, Domain domain) {
     return value;
+  }
+
+  @Override
+  public boolean isAffectedByEvent(ElementEvent event, Domain domain) {
+    return false;
   }
 
   @Override
