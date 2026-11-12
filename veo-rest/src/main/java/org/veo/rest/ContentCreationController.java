@@ -370,7 +370,7 @@ public class ContentCreationController extends AbstractVeoController {
           @PathVariable
           @Size(min = 1, max = INSPECTION_ID_MAX_LENGTH)
           String inspectionId,
-      @RequestBody Inspection inspection) {
+      @RequestBody @Valid Inspection inspection) {
     return useCaseInteractor.execute(
         saveInspectionUseCase,
         new SaveInspectionUseCase.InputData(domainId, inspectionId, inspection),

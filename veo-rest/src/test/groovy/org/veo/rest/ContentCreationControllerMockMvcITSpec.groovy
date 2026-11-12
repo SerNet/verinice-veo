@@ -2629,6 +2629,28 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     }
 
     @WithUserDetails("content-creator")
+    def "inspections are validated"() {
+        given:
+        def domainId = parseJson(post("/content-creation/domains", [
+            name: "inspection validation test domain",
+            authority: "inspector jj",
+        ])).resourceId
+
+        when:
+        put("/content-creation/domains/$domainId/inspections/kaputt", [:], 400)
+
+        then:
+        def ex = thrown(HandlerMethodValidationException)
+        with(ex.parameterValidationResults.first()) {
+            resolvableErrors*.field ==~ [
+                "condition",
+                "severity",
+            ]
+            resolvableErrors*.defaultMessage ==~ ["must not be null"].repeat(2)
+        }
+    }
+
+    @WithUserDetails("content-creator")
     def "addPart suggestions are validated"() {
         given: "an asset definition with two sub types and a process definition with another sub type"
         executeInTransaction {

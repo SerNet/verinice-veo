@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import javax.annotation.Nullable;
@@ -61,7 +62,7 @@ import lombok.NonNull;
         "Dynamic check to be performed on elements. An inspection can find a problem with an element, direct the user's attention to the problem and suggest actions that would fix the problem. An inspection defines a condition and some suggestions. If the inspection is run on an element and the condition is true, the suggestions are presented to the user.")
 public class Inspection {
 
-  @NonNull Severity severity;
+  @NotNull @NonNull Severity severity;
   TranslatedText description;
 
   @Nullable
@@ -77,7 +78,7 @@ public class Inspection {
           "Element sub type that this inspection applies to. If this is null, the inspection applies to all element sub types.")
   String elementSubType;
 
-  @NonNull VeoExpression condition;
+  @NotNull @NonNull VeoExpression condition;
   @JsonProperty final List<Suggestion> suggestions = new ArrayList<>();
 
   public Optional<Finding> run(Element element, Domain domain) {
