@@ -26,6 +26,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.repository.GenericElementRepository;
+import org.veo.core.repository.InspectionFindingRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ElementEventListener {
   private final GenericElementRepository elementRepository;
+  private final InspectionFindingRepository inspectionFindingRepository;
 
   @TransactionalEventListener
   @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -46,6 +48,7 @@ public class ElementEventListener {
                   if (element.evaluateDecisions(domain, event)) {
                     element.setUpdatedAt(Instant.now());
                   }
+                  inspectionFindingRepository.updateInspections(element, domain, event);
                 }));
   }
 }

@@ -34,6 +34,8 @@ import org.veo.core.entity.TranslatedText
 import org.veo.core.entity.Unit
 import org.veo.core.entity.compliance.ImplementationStatus
 import org.veo.core.entity.condition.ConstantExpression
+import org.veo.core.entity.condition.EqualsExpression
+import org.veo.core.entity.condition.MaxRiskExpression
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.InspectionFindingRepository
 import org.veo.core.usecase.TemplateItems
@@ -337,6 +339,74 @@ class TaskControllerMockMvcITSpec extends VeoMvcSpec {
                 type == "inspection-finding"
                 summary.en == "check that asset ASAP"
             }
+        }
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "inspection tasks are updated when a relevant risk changes"() {
+        given:
+        def assetId
+        def scenarioId
+        txTemplate.execute {
+            testDomain.applyInspection("check", newInspection {
+                elementType = ElementType.ASSET
+                description = TranslatedText.of {"No risk values"}
+                condition = new EqualsExpression(
+                                new MaxRiskExpression(),
+                                new ConstantExpression(null)
+                        )
+            })
+            testDomain = domainDataRepository.save(testDomain)
+            def scenario = scenarioDataRepository.save(newScenario(unit) {
+                name = "bad things"
+                associateWithDomain(testDomain, "Attack", "NEW")
+            })
+            def asset = assetRepository.save(newAsset(unit) {
+                name = "all my IT"
+                associateWithDomain(testDomain, "Server", "NEW")
+                obtainRisk(scenario).with(this::assignDesignator)
+            })
+            inspectionFindingRepository.updateInspections(testDomain, false)
+            assetId = asset.id
+            scenarioId = scenario.id
+        }
+
+        expect:
+        with(parseJson(get("/domains/${testDomain.id}/tasks?unit=${unit.id}"))) {
+            totalItemCount == 1
+            with(items[0]) {
+                type == "inspection-finding"
+                element.name == "all my IT"
+                summary.en == "No risk values"
+            }
+        }
+
+        when: "updating the risk"
+        get("/assets/$assetId/risks/$scenarioId").with{
+            def body = parseJson(it)
+            body.domains[owner.testDomain.idAsString].riskDefinitions = [
+                riskyDef: [
+                    // TODO #5312 remove pointless impact
+                    impactValues: [
+                        [
+                            category      : "D",
+                            specificImpact: 1,
+                        ]
+                    ],
+                    riskValues  : [
+                        [
+                            category: "D",
+                            userDefinedResidualRisk: 1,
+                        ]
+                    ]
+                ]
+            ]
+            owner.put(body._self, body, ['If-Match': getETag(it)])
+        }
+
+        then: "the task is solved"
+        with(parseJson(get("/domains/${testDomain.id}/tasks?unit=${unit.id}"))) {
+            totalItemCount == 0
         }
     }
 

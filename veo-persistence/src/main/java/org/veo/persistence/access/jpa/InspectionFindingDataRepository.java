@@ -42,6 +42,12 @@ public interface InspectionFindingDataRepository
 
   @Transactional
   @Modifying
+  @Query("delete from #{#entityName} where element = ?1 and domain = ?2 and inspectionId in ?3")
+  void deleteAllByElementDomainAndInspectionIds(
+      Element element, Domain domain, Collection<String> inspectionIds);
+
+  @Transactional
+  @Modifying
   @Query("delete from #{#entityName} where domain = ?1")
   void deleteAllByDomain(Domain domain);
 

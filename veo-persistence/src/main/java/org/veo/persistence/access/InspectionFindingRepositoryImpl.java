@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Repository;
@@ -30,6 +31,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.TaskConfiguration;
+import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.repository.GenericElementRepository;
@@ -67,6 +69,17 @@ public class InspectionFindingRepositoryImpl implements InspectionFindingReposit
     }
     var inspections = domain.getInspections();
     inspectionFindingDataRepository.saveAll(getFindings(element, domain, inspections));
+  }
+
+  @Override
+  public void updateInspections(Element element, Domain domain, ElementEvent event) {
+    var affectedInspections =
+        domain.getInspections().entrySet().stream()
+            .filter(e -> e.getValue().getCondition().isAffectedByEvent(event, domain))
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    inspectionFindingDataRepository.deleteAllByElementDomainAndInspectionIds(
+        element, domain, affectedInspections.keySet());
+    inspectionFindingDataRepository.saveAll(getFindings(element, domain, affectedInspections));
   }
 
   @Override

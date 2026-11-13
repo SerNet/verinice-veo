@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.entity.inspection.Inspection;
 
@@ -29,6 +30,8 @@ public interface InspectionFindingRepository {
   List<Finding> findInspections(Element element, Domain domain);
 
   void updateInspections(Element element, Domain domain, boolean deleteExistingInspections);
+
+  void updateInspections(Element element, Domain domain, ElementEvent event);
 
   default void updateInspections(Element element, boolean deleteExistingInspections) {
     element.getDomains().forEach(d -> updateInspections(element, d, deleteExistingInspections));

@@ -23,13 +23,16 @@ import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.ElementType
+import org.veo.core.entity.TranslatedText
 import org.veo.core.entity.Unit
+import org.veo.core.entity.condition.DecisionResultValueExpression
 import org.veo.core.entity.condition.PartCountExpression
 import org.veo.core.entity.decision.DecisionRef
 import org.veo.core.entity.decision.firsthitpolicy.Condition
 import org.veo.core.entity.decision.firsthitpolicy.GreaterThanMatcher
 import org.veo.core.entity.event.ControlPartsChangedEvent
 import org.veo.core.repository.ControlRepository
+import org.veo.core.repository.InspectionFindingRepository
 import org.veo.listeners.ElementEventListener
 
 class ElementEventListenerITSpec extends VeoSpringSpec {
@@ -38,6 +41,9 @@ class ElementEventListenerITSpec extends VeoSpringSpec {
 
     @Autowired
     ControlRepository controlRepository
+
+    @Autowired
+    InspectionFindingRepository inspectionFindingRepository
 
     Client client
     Unit unit
@@ -52,12 +58,17 @@ class ElementEventListenerITSpec extends VeoSpringSpec {
             })
             defaultResultValue = false
         })
+        domain.applyInspection("shouldBeGroup", newInspection {
+            elementType = ElementType.CONTROL
+            description = TranslatedText.of {"It's a group!"}
+            condition = new DecisionResultValueExpression(new DecisionRef("isGroup"))
+        })
         domainDataRepository.save(domain)
         clientRepository.save(client)
         unit = unitDataRepository.save(newUnit(client))
     }
 
-    def "updates decision on event"() {
+    def "updates decision and inspection findings on event"() {
         given: "a control in the domain"
         def control = controlDataRepository.save(newControl(unit) {
             associateWithDomain(domain, "TOM", "NEW")
@@ -74,6 +85,11 @@ class ElementEventListenerITSpec extends VeoSpringSpec {
         then: "the result for the part-dependent decision has been updated"
         with(controlDataRepository.findById(control.id, client.id).get()) {
             it.getDecisionResults(domain).get(new DecisionRef("isGroup")).value
+        }
+
+        and: "an inspection finding has been produced"
+        with(inspectionFindingRepository.findInspections(control, domain)) {
+            it*.description*.translations*.get(EN) == ["It's a group!"]
         }
     }
 
