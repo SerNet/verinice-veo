@@ -122,4 +122,27 @@
             })  // ❌ This will be flagged
         </example>
     </rule>
+
+    <rule name="RequestBodyMustBeValidated"
+          language="java"
+          message="@RequestBody parameters must be annotated with @Valid or @Validated"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule">
+        <description>
+            Every @RequestBody parameter must be validated.
+        </description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+//MethodDeclaration[not(@Overridden = true())]
+  /FormalParameters/FormalParameter
+  [ModifierList/Annotation
+     [pmd-java:typeIs('org.springframework.web.bind.annotation.RequestBody')]]
+  [not(ModifierList/Annotation
+     [pmd-java:typeIs('jakarta.validation.Valid')
+      or pmd-java:typeIs('org.springframework.validation.annotation.Validated')])]
+  ]]></value>
+            </property>
+        </properties>
+    </rule>
 </ruleset>

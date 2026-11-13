@@ -151,8 +151,11 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         def translations = parseJson(get("/domains/$domainId")).translations
         translations.de.abbreviation = "newAbbreviation"
 
-        put("/content-creation/domains/$domainId", [name: "name not used",
-            translations: (translations)], 204)
+        put("/content-creation/domains/$domainId", [
+            name: "name not used",
+            translations: (translations),
+            templateVersion: '1'
+        ], 204)
 
         then: "the translation is changed"
         with(parseJson(get("/domains/$domainId"))) {

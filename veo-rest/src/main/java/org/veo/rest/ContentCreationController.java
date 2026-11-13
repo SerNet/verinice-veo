@@ -237,7 +237,9 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Schema updated")})
   // TODO #3042: remove this when we remove support for JSON schema
   public CompletableFuture<ResponseEntity<ApiResponseBody>> updateDomainWithSchema(
-      @PathVariable UUID id, @PathVariable ElementType type, @RequestBody JsonNode schemaNode) {
+      @PathVariable UUID id,
+      @PathVariable ElementType type,
+      @SuppressWarnings("PMD.RequestBodyMustBeValidated") @RequestBody JsonNode schemaNode) {
     try {
       ElementTypeDefinition typeDefinition =
           objectSchemaParser.parseTypeDefinitionFromObjectSchema(type, schemaNode);
@@ -256,7 +258,7 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "204", description = "Domain metadata updated")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> saveDomainMetadata(
       @Parameter(required = true, description = UUID_DESCRIPTION) @PathVariable UUID domainId,
-      @RequestBody DomainMetadataDto domainMetadata) {
+      @RequestBody @Valid DomainMetadataDto domainMetadata) {
     return useCaseInteractor.execute(
         saveDomainMetadataUseCase,
         new SaveDomainMetadataUseCase.InputData(domainId, domainMetadata.getTranslations()),
@@ -272,7 +274,7 @@ public class ContentCreationController extends AbstractVeoController {
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
-      @RequestBody IncarnationConfiguration incarnationConfiguration) {
+      @RequestBody @Valid IncarnationConfiguration incarnationConfiguration) {
     return useCaseInteractor.execute(
         saveIncarnationConfigurationUseCase,
         new SaveIncarnationConfigurationUseCase.InputData(domainId, incarnationConfiguration),
@@ -287,7 +289,7 @@ public class ContentCreationController extends AbstractVeoController {
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           UUID domainId,
-      @RequestBody TaskConfiguration taskConfiguration) {
+      @RequestBody @Valid TaskConfiguration taskConfiguration) {
     return useCaseInteractor.execute(
         saveTaskConfigurationUseCase,
         new SaveTaskConfigurationUseCase.InputData(domainId, taskConfiguration),
