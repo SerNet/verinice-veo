@@ -49,9 +49,9 @@ class DecisionUpdateITSpec extends VeoSpringSpec {
     def setup() {
         client = createTestClient()
         domain = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID)
-        domain.decisions.put("isGroup", newFirstHitPolicyDecision(ElementType.CONTROL, "CTL_TOM") {
+        domain.decisions.put("isGroup", newFirstHitPolicyDecision(ElementType.CONTROL, "TOM") {
             rules.add(newRule(true) {
-                conditions.add(new Condition(new PartCountExpression("CTL_TOM"), new GreaterThanMatcher(BigDecimal.ZERO)))
+                conditions.add(new Condition(new PartCountExpression("TOM"), new GreaterThanMatcher(BigDecimal.ZERO)))
             })
             defaultResultValue = false
         })
@@ -63,12 +63,12 @@ class DecisionUpdateITSpec extends VeoSpringSpec {
     def "updates decision on event"() {
         given: "a control in the domain"
         def control = controlDataRepository.save(newControl(unit) {
-            associateWithDomain(domain, "CTL_TOM", "NEW")
+            associateWithDomain(domain, "TOM", "NEW")
         })
 
         when: "adding a part and updating decisions"
         def part = controlDataRepository.save(newControl(unit) {
-            associateWithDomain(domain, "CTL_TOM", "NEW")
+            associateWithDomain(domain, "TOM", "NEW")
         })
         control.addPart(part)
         controlDataRepository.save(control)
