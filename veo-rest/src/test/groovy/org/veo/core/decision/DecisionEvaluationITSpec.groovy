@@ -19,22 +19,21 @@ package org.veo.core.decision
 
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Domain
+import org.veo.core.entity.Element
 import org.veo.core.entity.Process
 import org.veo.core.entity.ProcessRisk
 import org.veo.core.entity.Scenario
 import org.veo.core.entity.Unit
 import org.veo.core.entity.decision.DecisionRef
+import org.veo.core.entity.decision.DecisionResult
 import org.veo.core.entity.risk.CategorizedRiskValueProvider
 import org.veo.core.entity.risk.CategoryRef
 import org.veo.core.entity.risk.DeterminedRiskImpl
 import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.entity.risk.RiskRef
-import org.veo.core.repository.GenericElementRepository
-import org.veo.core.usecase.decision.Decider
 
-class DeciderITSpec extends VeoSpringSpec {
+class DecisionEvaluationITSpec extends VeoSpringSpec {
     def piaMandatoryRef = new DecisionRef("piaMandatory")
-    Decider decider = new Decider(Mock(GenericElementRepository))
 
     Unit unit
     Domain domain
@@ -73,7 +72,7 @@ class DeciderITSpec extends VeoSpringSpec {
         ])
 
         when:
-        def decisions = decider.decide(process, domain)
+        def decisions = evaluate(process, domain)
 
         then:
         with(decisions[piaMandatoryRef]) {
@@ -92,7 +91,7 @@ class DeciderITSpec extends VeoSpringSpec {
         addRisk(process, [:])
 
         when:
-        def decisions = decider.decide(process, domain)
+        def decisions = evaluate(process, domain)
 
         then:
         with(decisions[piaMandatoryRef]) {
@@ -113,7 +112,7 @@ class DeciderITSpec extends VeoSpringSpec {
         ])
 
         when:
-        def decisions = decider.decide(process, domain)
+        def decisions = evaluate(process, domain)
 
         then:
         with(decisions[piaMandatoryRef]) {
@@ -134,7 +133,7 @@ class DeciderITSpec extends VeoSpringSpec {
         ])
 
         when:
-        def decisions = decider.decide(process, domain)
+        def decisions = evaluate(process, domain)
 
         then:
         with(decisions[piaMandatoryRef]) {
@@ -157,7 +156,7 @@ class DeciderITSpec extends VeoSpringSpec {
         ])
 
         when:
-        def decisions = decider.decide(process, domain)
+        def decisions = evaluate(process, domain)
 
         then:
         with(decisions[piaMandatoryRef]) {
@@ -181,7 +180,7 @@ class DeciderITSpec extends VeoSpringSpec {
         ])
 
         when:
-        def decisions = decider.decide(process, domain)
+        def decisions = evaluate(process, domain)
 
         then:
         with(decisions[piaMandatoryRef]) {
@@ -206,7 +205,7 @@ class DeciderITSpec extends VeoSpringSpec {
         ])
 
         when:
-        def decisions = decider.decide(process, domain)
+        def decisions = evaluate(process, domain)
 
         then:
         with(decisions[piaMandatoryRef]) {
@@ -228,7 +227,7 @@ class DeciderITSpec extends VeoSpringSpec {
         ])
 
         when:
-        def decisions = decider.decide(process, domain)
+        def decisions = evaluate(process, domain)
 
         then:
         with(decisions[piaMandatoryRef]) {
@@ -247,7 +246,7 @@ class DeciderITSpec extends VeoSpringSpec {
         ])
 
         when:
-        def decisions = decider.decide(process, domain)
+        def decisions = evaluate(process, domain)
 
         then:
         with(decisions[piaMandatoryRef]) {
@@ -268,7 +267,7 @@ class DeciderITSpec extends VeoSpringSpec {
         ])
 
         when:
-        def decisions = decider.decide(process, domain)
+        def decisions = evaluate(process, domain)
 
         then:
         with(decisions[piaMandatoryRef]) {
@@ -288,7 +287,7 @@ class DeciderITSpec extends VeoSpringSpec {
         ])
 
         when:
-        def decisions = decider.decide(process, domain)
+        def decisions = evaluate(process, domain)
 
         then:
         with(decisions[piaMandatoryRef]) {
@@ -311,7 +310,7 @@ class DeciderITSpec extends VeoSpringSpec {
         ])
 
         when:
-        def decisions = decider.decide(process, domain)
+        def decisions = evaluate(process, domain)
 
         then:
         with(decisions[piaMandatoryRef]) {
@@ -335,7 +334,7 @@ class DeciderITSpec extends VeoSpringSpec {
         ])
 
         when:
-        def decisions = decider.decide(process, domain)
+        def decisions = evaluate(process, domain)
 
         then:
         with(decisions[piaMandatoryRef]) {
@@ -355,7 +354,7 @@ class DeciderITSpec extends VeoSpringSpec {
         addRisk(process, [
             (riskCategoryC): riskValueLow
         ])
-        def decisions = decider.decide(process, domain)
+        def decisions = evaluate(process, domain)
 
         then:
         with(decisions[piaMandatoryRef]) {
@@ -375,7 +374,7 @@ class DeciderITSpec extends VeoSpringSpec {
         addRisk(process, [
             (riskCategoryC): riskValueLow
         ])
-        def decisions = decider.decide(process, domain)
+        def decisions = evaluate(process, domain)
 
         then:
         with(decisions[piaMandatoryRef]) {
@@ -394,7 +393,7 @@ class DeciderITSpec extends VeoSpringSpec {
         ])
 
         when:
-        def decisions = decider.decide(process, domain)
+        def decisions = evaluate(process, domain)
 
         then:
         with(decisions[piaMandatoryRef]) {
@@ -428,5 +427,10 @@ class DeciderITSpec extends VeoSpringSpec {
                 }
             }
         }
+    }
+
+    private Map<DecisionRef, DecisionResult> evaluate(Element element, Domain domain) {
+        element.evaluateDecisions(domain, null)
+        element.getDecisionResults(domain)
     }
 }
