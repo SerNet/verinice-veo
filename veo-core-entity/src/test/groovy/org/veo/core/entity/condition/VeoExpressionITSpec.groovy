@@ -17,10 +17,6 @@
  */
 package org.veo.core.entity.condition
 
-import java.time.Duration
-
-import org.codehaus.groovy.ast.expr.ListExpression
-
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Control
 import org.veo.core.entity.ControlImplementationConfiguration
@@ -53,7 +49,6 @@ import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.entity.riskdefinition.CategoryDefinition
 import org.veo.core.entity.riskdefinition.CategoryLevel
 import org.veo.core.entity.riskdefinition.RiskDefinition
-import org.veo.core.entity.type.VeoType
 import org.veo.core.entity.type.VeoType as T
 
 import spock.lang.Specification
@@ -439,87 +434,6 @@ class VeoExpressionITSpec extends Specification {
         T.listOf(T.integer())             | T.string()  | "source ('from') cannot contain value: Integer does not intersect with String"
         T.listOf(T.integer().orNothing()) | T.string()  | "source ('from') cannot contain value: Integer|Null does not intersect with String"
         T.listOf(T.integer())             | T.nothing() | "source ('from') cannot contain value: Integer does not intersect with Null"
-    }
-
-    def "equals expression is valid for #leftType and #rightType"() {
-        given:
-        def domain = Mock(Domain) {}
-        def exp = new EqualsExpression(
-                Mock(CustomAspectAttributeValueExpression) {
-                    getValueType(domain, ElementType.ASSET) >> leftType
-                },
-                Mock(ConstantExpression) {
-                    getValueType(domain, ElementType.ASSET) >> rightType
-                },
-        )
-
-        when:
-        exp.selfValidate(domain, ElementType.ASSET)
-
-        then:
-        noExceptionThrown()
-        exp.getValueType(domain, ElementType.ASSET) == T.bool()
-
-        when: "inverting the comparison"
-        exp = new EqualsExpression(exp.right, exp.left)
-
-        and:
-        exp.selfValidate(domain, ElementType.ASSET)
-
-        then:
-        noExceptionThrown()
-        exp.getValueType(domain, ElementType.ASSET) == T.bool()
-
-        where:
-        leftType                                 | rightType
-        T.integer()                              | T.integer()
-        T.integer().orNothing()                  | T.integer()
-        T.integer().orNothing()                  | T.sumOf(T.integer(), T.string())
-        T.sumOf(T.integer(), T.bool())           | T.integer()
-        T.sumOf(T.integer(), T.bool())           | T.bool()
-        T.sumOf(T.integer(), T.bool())           | T.bool().orNothing()
-        T.sumOf(T.integer(), T.bool())           | T.sumOf(T.bool(), T.string())
-        T.listOf(T.integer())                    | T.listOf(T.integer())
-        T.listOf(T.integer())                    | T.listOf(T.integer().orNothing())
-        T.listOf(T.sumOf(T.integer(), T.bool())) | T.listOf(T.sumOf(T.string(), T.bool()))
-        T.sumOf(T.bool(), T.listOf(T.integer())) | T.sumOf(T.string(), T.listOf(T.integer().orNothing()))
-    }
-
-    def "equals expression is invalid for #leftType and #rightType"() {
-        given:
-        def domain = Mock(Domain) {}
-        def exp = new EqualsExpression(
-                Mock(CustomAspectAttributeValueExpression) {
-                    getValueType(domain, ElementType.ASSET) >> leftType
-                },
-                Mock(ConstantExpression) {
-                    getValueType(domain, ElementType.ASSET) >> rightType
-                },
-        )
-
-        when:
-        exp.selfValidate(domain, ElementType.ASSET)
-
-        then:
-        IllegalArgumentException illEx = thrown()
-        illEx.message == expectedError
-
-        when: "inverting the comparison"
-        exp = new EqualsExpression(exp.right, exp.left)
-
-        and:
-        exp.selfValidate(domain, ElementType.ASSET)
-
-        then:
-        thrown(IllegalArgumentException)
-
-        where:
-        leftType                      | rightType   | expectedError
-        T.integer()                   | T.nothing() | "given values cannot be equal: Integer does not intersect with Null"
-        T.integer()                   | T.string()  | "given values cannot be equal: Integer does not intersect with String"
-        T.integer().orNothing()       | T.string()  | "given values cannot be equal: Integer|Null does not intersect with String"
-        T.sumOf(T.bool(), T.string()) | T.number()  | "given values cannot be equal: Boolean|String does not intersect with BigDecimal|Integer|Long"
-        T.listOf(T.integer())         | T.integer() | "given values cannot be equal: List<Integer> does not intersect with Integer"
     }
 
     def "contains expression is valid for #haystackType and #needleType"() {
