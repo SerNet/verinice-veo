@@ -160,6 +160,7 @@ class SwaggerSpec extends VeoSpringSpec {
                 ],
                 description: 'Key is a domain-ID, values are the reference to the domain and its available risk definitions'
             ]
+            it.properties.designator.deprecated == true
             it.required == ['designator', 'scenario']
         }
     }
@@ -215,7 +216,8 @@ class SwaggerSpec extends VeoSpringSpec {
             ]
             it.properties.designator == [
                 type: 'string',
-                readOnly: true
+                readOnly: true,
+                deprecated: true
             ]
             it.required == ['targetUri']
         }
@@ -247,7 +249,8 @@ class SwaggerSpec extends VeoSpringSpec {
             ]
             it.properties.designator == [
                 type: 'string',
-                readOnly: true
+                readOnly: true,
+                deprecated: true
             ]
             it.required == ['targetUri']
         }
@@ -1600,7 +1603,8 @@ class SwaggerSpec extends VeoSpringSpec {
             ]
             it.properties.designator == [
                 type: 'string',
-                readOnly: true
+                readOnly: true,
+                deprecated: true
             ]
             it.properties.displayName == [
                 type       : 'string',

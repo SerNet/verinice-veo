@@ -85,6 +85,7 @@ public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDt
       requiredMode = REQUIRED,
       accessMode = Schema.AccessMode.READ_ONLY)
   @ToString.Include
+  @Deprecated
   private String designator;
 
   @JsonIgnore private Set<@Valid IdRef<Domain>> domains = Collections.emptySet();

@@ -105,6 +105,7 @@ public abstract class AbstractElementDto<T extends Element>
       example = "A-155",
       accessMode = Schema.AccessMode.READ_ONLY)
   @ToString.Include
+  @Deprecated
   private String designator;
 
   @Schema(description = "The abbreviation for the Element.", example = "Lock doors")

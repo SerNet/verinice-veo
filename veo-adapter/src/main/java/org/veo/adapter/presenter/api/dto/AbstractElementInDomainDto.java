@@ -104,6 +104,7 @@ public abstract class AbstractElementInDomainDto<TElement extends Element>
   private String description;
 
   @JsonProperty(access = READ_ONLY)
+  @Deprecated
   private String designator;
 
   @Schema(description = "Unit that this element belongs to", implementation = IdRefOwner.class)

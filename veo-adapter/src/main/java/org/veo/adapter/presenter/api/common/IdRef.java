@@ -81,6 +81,7 @@ public class IdRef<T extends Identifiable> implements IIdRef, ITypedId<T> {
   }
 
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  @Deprecated
   public String getDesignator() {
     if (entity instanceof Element designated) {
       return designated.getDesignator();
