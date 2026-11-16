@@ -17,23 +17,18 @@
  */
 package org.veo.core.usecase.decision;
 
-import java.time.Instant;
 import java.util.Map;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
-import org.veo.core.entity.event.ElementEvent;
-import org.veo.core.repository.GenericElementRepository;
 
 import lombok.RequiredArgsConstructor;
 
 /** Runs all applicable decisions for an element and gathers the results. */
 @RequiredArgsConstructor
 public class Decider {
-  private final GenericElementRepository elementRepository;
-
   /**
    * Updates all decisions on given element.
    *
@@ -42,22 +37,5 @@ public class Decider {
   public Map<DecisionRef, DecisionResult> decide(Element element, Domain domain) {
     element.evaluateDecisions(domain, null);
     return element.getDecisionResults(domain);
-  }
-
-  /**
-   * Reevaluates all decisions on an element that are affected by given event and updates the
-   * decision results on the element accordingly.
-   */
-  public void updateDecisions(ElementEvent event) {
-    elementRepository
-        .findById(event.getEntityId(), event.getEntityType(), event.getClientId())
-        .ifPresent(element ->
-            element.getDomains().stream()
-                .filter(d -> event.getDomainId() == null || d.getId().equals(event.getDomainId()))
-                .forEach(domain -> {
-                  if (element.evaluateDecisions(domain, event)) {
-                    element.setUpdatedAt(Instant.now());
-                  }
-                }));
   }
 }

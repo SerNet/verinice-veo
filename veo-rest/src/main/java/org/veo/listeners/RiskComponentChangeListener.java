@@ -36,7 +36,6 @@ import org.veo.core.entity.ElementType;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.RiskRelated;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.event.InboundLinkEvent;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.entity.event.RiskDefinitionChangedEvent;
@@ -49,7 +48,6 @@ import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.QueryCondition;
 import org.veo.core.repository.UnitRepository;
-import org.veo.core.usecase.decision.Decider;
 import org.veo.service.ElementMigrationService;
 import org.veo.service.TemplateItemMigrationService;
 import org.veo.service.risk.ImpactInheritanceCalculator;
@@ -71,7 +69,6 @@ public class RiskComponentChangeListener {
   private final GenericElementRepository elementRepository;
   private final UnitRepository unitRepository;
   private final DomainRepository domainRepository;
-  private final Decider decider;
   private final ElementMigrationService elementMigrationService;
   private final TemplateItemMigrationService templateItemMigrationService;
 
@@ -158,11 +155,5 @@ public class RiskComponentChangeListener {
           unit -> impactInheritanceCalculator.updateAllRootNodes(unit, domain, rd.getId()));
       log.debug("{} units updated", units.size());
     }
-  }
-
-  @TransactionalEventListener
-  @Transactional(propagation = Propagation.REQUIRES_NEW)
-  public void handle(ElementEvent event) {
-    decider.updateDecisions(event);
   }
 }

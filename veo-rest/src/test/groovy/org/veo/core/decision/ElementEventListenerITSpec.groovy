@@ -30,14 +30,11 @@ import org.veo.core.entity.decision.firsthitpolicy.Condition
 import org.veo.core.entity.decision.firsthitpolicy.GreaterThanMatcher
 import org.veo.core.entity.event.ControlPartsChangedEvent
 import org.veo.core.repository.ControlRepository
-import org.veo.core.usecase.decision.Decider
+import org.veo.listeners.ElementEventListener
 
-import jakarta.transaction.Transactional
-
-@Transactional
-class DecisionUpdateITSpec extends VeoSpringSpec {
+class ElementEventListenerITSpec extends VeoSpringSpec {
     @Autowired
-    Decider decider
+    ElementEventListener elementEventListener
 
     @Autowired
     ControlRepository controlRepository
@@ -72,17 +69,28 @@ class DecisionUpdateITSpec extends VeoSpringSpec {
         })
         control.addPart(part)
         controlDataRepository.save(control)
-        decider.updateDecisions(new ControlPartsChangedEvent(control, [] as Set))
+        elementEventListener.handle(new ControlPartsChangedEvent(control, [] as Set))
 
         then: "the result for the part-dependent decision has been updated"
         with(controlDataRepository.findById(control.id, client.id).get()) {
             it.getDecisionResults(domain).get(new DecisionRef("isGroup")).value
         }
+    }
+
+    def "deleting a composite does not cause event handling errors"() {
+        given: "a control with a part in the domain"
+        def control = controlDataRepository.save(newControl(unit) {
+            associateWithDomain(domain, "TOM", "NEW")
+        })
+        def part = controlDataRepository.save(newControl(unit) {
+            associateWithDomain(domain, "TOM", "NEW")
+        })
+        control.addPart(part)
 
         when: "deleting the control and passing an event"
         control.removePart(part)
         controlDataRepository.delete(control)
-        decider.updateDecisions(new ControlPartsChangedEvent(control, [part] as Set))
+        elementEventListener.handle(new ControlPartsChangedEvent(control, [part] as Set))
 
         then:
         notThrown(Exception)

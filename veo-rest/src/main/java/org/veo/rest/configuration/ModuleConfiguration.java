@@ -289,8 +289,8 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public Decider decider(GenericElementRepository genericElementRepository) {
-    return new Decider(genericElementRepository);
+  public Decider decider() {
+    return new Decider();
   }
 
   @Bean
