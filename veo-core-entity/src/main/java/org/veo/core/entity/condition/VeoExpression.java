@@ -58,7 +58,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
   @Type(value = PartCountExpression.class, name = "partCount"),
   @Type(value = PotentialImpactsCompleteExpression.class, name = "potentialImpactsComplete"),
   @Type(value = RemoveExpression.class, name = "remove"),
-  @Type(value = RiskDefinitionExpression.class, name = "riskDefinition"),
+  @Type(value = RiskDefinitionIdExpression.class, name = "riskDefinitionId"),
   @Type(value = TernaryExpression.class, name = "ternary"),
 })
 @Schema(
@@ -97,7 +97,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
           value = "potentialImpactsComplete",
           schema = PotentialImpactsCompleteExpression.class),
       @DiscriminatorMapping(value = "remove", schema = RemoveExpression.class),
-      @DiscriminatorMapping(value = "riskDefinition", schema = RiskDefinitionExpression.class),
+      @DiscriminatorMapping(value = "riskDefinitionId", schema = RiskDefinitionIdExpression.class),
       @DiscriminatorMapping(value = "ternary", schema = TernaryExpression.class)
     },
     oneOf = {
@@ -121,7 +121,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
       PartCountExpression.class,
       PotentialImpactsCompleteExpression.class,
       RemoveExpression.class,
-      RiskDefinitionExpression.class,
+      RiskDefinitionIdExpression.class,
       TernaryExpression.class
     })
 public interface VeoExpression {

@@ -1204,7 +1204,7 @@ class VeoExpressionITSpec extends Specification {
         def scopeWithoutRiskDefinition = Spy(Scope) {
             getRiskDefinition(domain) >> Optional.empty()
         }
-        def exp = new RiskDefinitionExpression()
+        def exp = new RiskDefinitionIdExpression()
 
         expect:
         exp.selfValidate(domain, ElementType.SCOPE)
@@ -1215,7 +1215,7 @@ class VeoExpressionITSpec extends Specification {
 
     def "risk definition can only be determined for scopes"() {
         when:
-        new RiskDefinitionExpression().selfValidate(Mock(Domain), elementType)
+        new RiskDefinitionIdExpression().selfValidate(Mock(Domain), elementType)
 
         then:
         def ex = thrown(IllegalArgumentException)
