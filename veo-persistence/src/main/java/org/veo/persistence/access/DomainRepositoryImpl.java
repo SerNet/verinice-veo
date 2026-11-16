@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 
 import jakarta.persistence.EntityManager;
 
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +39,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.DomainRepository;
+import org.veo.persistence.access.jpa.CatalogItemDataRepository;
 import org.veo.persistence.access.jpa.DomainDataRepository;
 import org.veo.persistence.access.jpa.ProfileDataRepository;
 import org.veo.persistence.entity.jpa.DomainData;
@@ -52,16 +54,19 @@ public class DomainRepositoryImpl
 
   private final DomainDataRepository dataRepository;
   private final ProfileDataRepository profileDataRepository;
+  private final CatalogItemDataRepository catalogItemDataRepository;
   private final EntityManager em;
 
   public DomainRepositoryImpl(
       DomainDataRepository dataRepository,
       ProfileDataRepository profileDataRepository,
+      CatalogItemDataRepository catalogItemDataRepository,
       EntityManager em,
       ValidationService validator) {
     super(dataRepository, validator);
     this.dataRepository = dataRepository;
     this.profileDataRepository = profileDataRepository;
+    this.catalogItemDataRepository = catalogItemDataRepository;
     this.em = em;
   }
 
@@ -139,11 +144,12 @@ public class DomainRepositoryImpl
         dataRepository
             .findByIdWithProfilesAndRiskDefinitions(id, clientId)
             .orElseThrow(() -> new NotFoundException(id, Domain.class));
-    dataRepository.findByIdWithDecisionsAndInspections(id, clientId);
-    dataRepository.findWithCatalogItemsAndAllReferencesById(id);
-    d.getProfiles()
-        .forEach(p ->
-            profileDataRepository.findProfileByIdFetchTailoringReferences(p.getId(), clientId));
+    dataRepository.findByIdWithDecisionsInspectionsAndDomainTemplate(id, clientId);
+    dataRepository.findActiveByIdsAndClientWithEntityTypeDefinitionsAndRiskDefinitions(
+        List.of(id), clientId);
+    catalogItemDataRepository.findAllByDomainFetchTailoringReferences(id);
+    Hibernate.initialize(d.getCatalogItems());
+    profileDataRepository.findAllByDomainFetchItemsAndTailoringReferences(id);
     return d;
   }
 

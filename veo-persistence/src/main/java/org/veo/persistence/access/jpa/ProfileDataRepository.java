@@ -57,6 +57,15 @@ public interface ProfileDataRepository extends IdentifiableVersionedDataReposito
 
   @Query(
       """
+        select p from profile p
+          left join fetch p.items i
+          left join fetch i.tailoringReferences
+          where p.domain.id = ?1
+      """)
+  List<ProfileData> findAllByDomainFetchItemsAndTailoringReferences(UUID domainId);
+
+  @Query(
+      """
         select i from profile_item i
            left join fetch i.tailoringReferences tr
           left join fetch i.appliedCatalogItem

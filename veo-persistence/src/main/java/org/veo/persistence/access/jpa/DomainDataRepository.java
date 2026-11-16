@@ -23,7 +23,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,6 +58,17 @@ public interface DomainDataRepository extends IdentifiableVersionedDataRepositor
 
   @Query(
       """
+          select d from #{#entityName} d
+            join fetch d.decisionSet
+            join fetch d.inspectionSet
+            left join fetch d.domainTemplate
+            where d.id = ?1 and d.owner.id = ?2
+      """)
+  Optional<DomainData> findByIdWithDecisionsInspectionsAndDomainTemplate(
+      UUID domainId, UUID clientId);
+
+  @Query(
+      """
         select d from #{#entityName} d
           left join fetch d.profiles
           join fetch d.riskDefinitionSet
@@ -87,14 +97,6 @@ public interface DomainDataRepository extends IdentifiableVersionedDataRepositor
 
   @Query("select count(d.id) > 0 from domain d where d.name = ?1 and d.owner = ?2")
   boolean nameExistsInClient(String name, Client client);
-
-  @EntityGraph(
-      attributePaths = {
-        "catalogItems",
-        "catalogItems.tailoringReferences",
-        "catalogItems.updateReferences"
-      })
-  void findWithCatalogItemsAndAllReferencesById(UUID id);
 
   @Query(
       """

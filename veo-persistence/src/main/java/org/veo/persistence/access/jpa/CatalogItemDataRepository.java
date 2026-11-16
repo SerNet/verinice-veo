@@ -18,6 +18,7 @@
 package org.veo.persistence.access.jpa;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -89,6 +90,14 @@ public interface CatalogItemDataRepository extends CrudRepository<CatalogItemDat
           where dt.id = ?1
       """)
   Set<CatalogItemData> findAllByDomainTemplateFetchTailoringReferences(UUID domainTemplateId);
+
+  @Query(
+      """
+        select ci from #{#entityName} ci
+          left join fetch ci.tailoringReferences
+          where ci.domain.id = ?1
+      """)
+  List<CatalogItemData> findAllByDomainFetchTailoringReferences(UUID domainId);
 
   @Query(
       """
