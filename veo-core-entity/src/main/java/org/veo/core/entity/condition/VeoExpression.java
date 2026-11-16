@@ -49,6 +49,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
   @Type(value = EqualsExpression.class, name = "equals"),
   @Type(value = DecisionResultValueExpression.class, name = "decisionResultValue"),
   @Type(value = ImplementedRequirementsExpression.class, name = "implementedRequirements"),
+  @Type(value = IsEmptyExpression.class, name = "isEmpty"),
   @Type(value = LinksExpression.class, name = "links"),
   @Type(value = LinkTargetsExpression.class, name = "linkTargets"),
   @Type(value = ListOfExpression.class, name = "listOf"),
@@ -86,6 +87,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
       @DiscriminatorMapping(
           value = "implementedRequirements",
           schema = ImplementedRequirementsExpression.class),
+      @DiscriminatorMapping(value = "isEmpty", schema = IsEmptyExpression.class),
       @DiscriminatorMapping(value = "links", schema = LinksExpression.class),
       @DiscriminatorMapping(value = "linkTargets", schema = LinkTargetsExpression.class),
       @DiscriminatorMapping(value = "listOf", schema = ListOfExpression.class),
@@ -112,6 +114,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
       EqualsExpression.class,
       DecisionResultValueExpression.class,
       ImplementedRequirementsExpression.class,
+      IsEmptyExpression.class,
       LinksExpression.class,
       LinkTargetsExpression.class,
       ListOfExpression.class,

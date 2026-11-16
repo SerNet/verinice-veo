@@ -1227,6 +1227,82 @@ class VeoExpressionITSpec extends Specification {
         ElementType.PROCESS | "Process"
     }
 
+    def "isEmpty is #expected for #value"() {
+        given:
+        def element = Mock(Element)
+        def domain = Mock(Domain)
+        def exp = new IsEmptyExpression(Mock(VeoExpression) {
+            getValue(element, domain) >> value
+        })
+
+        expect:
+        exp.getValue(element, domain) == expected
+
+        where:
+        value  | expected
+        []     | true
+        [1, 2] | false
+        null   | true
+    }
+
+    def "isEmpty is valid for #listType"() {
+        given:
+        def domain = Mock(Domain)
+        def exp = new IsEmptyExpression(Mock(VeoExpression) {
+            getValueType(domain, ElementType.ASSET) >> listType
+        })
+
+        when:
+        exp.selfValidate(domain, ElementType.ASSET)
+
+        then:
+        noExceptionThrown()
+        exp.getValueType(domain, ElementType.ASSET) == T.bool()
+
+        where:
+        listType << [
+            T.listOf(T.integer()),
+            T.listOf(T.controlImplementation()),
+            T.listOf(T.string()).orNothing(),
+            T.nothing(),
+        ]
+    }
+
+    def "isEmpty is invalid for #listType"() {
+        given:
+        def domain = Mock(Domain)
+        def exp = new IsEmptyExpression(Mock(VeoExpression) {
+            getValueType(domain, ElementType.ASSET) >> listType
+        })
+
+        when:
+        exp.selfValidate(domain, ElementType.ASSET)
+
+        then:
+        IllegalArgumentException ex = thrown()
+        ex.message == "invalid list for isEmpty: expected List<*|Null>|Null, got $typeName"
+
+        where:
+        listType    | typeName
+        T.integer() | "Integer"
+        T.bool()    | "Boolean"
+    }
+
+    def "isEmpty is affected by the same events as its list"() {
+        given:
+        def domain = Mock(Domain)
+        def event = Mock(ElementEvent)
+        def list = Mock(VeoExpression)
+        def exp = new IsEmptyExpression(list)
+
+        when:
+        def affected = exp.isAffectedByEvent(event, domain)
+
+        then:
+        1 * list.isAffectedByEvent(event, domain) >> true
+        affected
+    }
+
     private static ImpactValues impacts(Map<String, Map<String, Integer>> values) {
         def toRefs = { Map<String, Integer> m ->
             (m ?: [:]).collectEntries { k, v ->
