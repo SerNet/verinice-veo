@@ -28,7 +28,7 @@ import org.veo.core.entity.type.VeoType;
 import lombok.Data;
 
 @Data
-public class RiskDefinitionExpression implements VeoExpression {
+public class RiskDefinitionIdExpression implements VeoExpression {
   @Override
   public Object getValue(Element element, Domain domain) {
     if (element instanceof Scope scope) {
