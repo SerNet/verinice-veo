@@ -37,6 +37,8 @@ veo:
     system-messages: hello
     domain-template-upload: temp
     create-domains: dom
+  inspection-tasks:
+    enabled: true
 
 spring:
   datasource:

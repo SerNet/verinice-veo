@@ -109,6 +109,11 @@ class DomainUpdateRestTest extends VeoRestTest {
         and: "decision results are present on migrated element"
         migratedProcess.domains[newDomainId].decisionResults.riskAnalyzed.decisiveRule == 0
 
+        and: "tasks are present"
+        with(get("/domains/$newDomainId/tasks?unit=$unitId").body) {
+            it.items*.summary*.en == ["Risks not analyzed"]
+        }
+
         expect: "the old incarnation to be readable and writable"
         get("/domains/$newDomainId/assets/$c1AssetId").with{
             body.name == "c1"
@@ -1055,6 +1060,24 @@ class DomainUpdateRestTest extends VeoRestTest {
                         ]
                     ],
                     defaultResultValue: true
+                ]
+            ],
+            inspections: [
+                riskAnalysisPending: [
+                    description: [en: "Risks not analyzed"],
+                    elementType: "process",
+                    severity   : "WARNING",
+                    condition  : [
+                        type : "equals",
+                        left : [
+                            type    : "decisionResultValue",
+                            decision: "riskAnalyzed"
+                        ],
+                        right: [
+                            type : "constant",
+                            value: false
+                        ],
+                    ]
                 ]
             ],
             riskDefinitions: [
