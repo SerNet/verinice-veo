@@ -32,7 +32,6 @@ import org.veo.core.repository.InspectionFindingRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.ETag;
-import org.veo.core.usecase.decision.Decider;
 import org.veo.core.usecase.service.EntityStateMapper;
 import org.veo.core.usecase.service.RefResolverFactory;
 
@@ -45,7 +44,6 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
 
   private final ElementRepository<T> repo;
   private final RefResolverFactory refResolverFactory;
-  private final Decider decider;
   private final EntityStateMapper entityStateMapper;
   private final InspectionFindingRepository inspectionFindingRepository;
 
@@ -66,7 +64,7 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
     ETag.validate(input.eTag, storedElement);
     entityStateMapper.mapState(inputElement, storedElement, false, true, idRefResolver);
     storedElement.setUpdatedAt(Instant.now());
-    decider.decide(storedElement, domain);
+    storedElement.evaluateDecisions(domain, null);
     DomainSensitiveElementValidator.validate(storedElement);
     storedElement = repo.save(storedElement);
     inspectionFindingRepository.updateInspections(storedElement, domain, true);

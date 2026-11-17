@@ -25,7 +25,6 @@ import org.veo.core.repository.InspectionFindingRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.RetryableUseCase;
-import org.veo.core.usecase.decision.Decider;
 import org.veo.core.usecase.service.EntityStateMapper;
 import org.veo.core.usecase.service.RefResolverFactory;
 
@@ -35,7 +34,6 @@ public class UpdateAssetInDomainUseCase extends UpdateElementInDomainUseCase<Ass
 
   public UpdateAssetInDomainUseCase(
       RepositoryProvider repositoryProvider,
-      Decider decider,
       EntityStateMapper entityStateMapper,
       EventPublisher eventPublisher,
       RefResolverFactory refResolverFactory,
@@ -43,7 +41,6 @@ public class UpdateAssetInDomainUseCase extends UpdateElementInDomainUseCase<Ass
     super(
         repositoryProvider.getElementRepositoryFor(Asset.class),
         refResolverFactory,
-        decider,
         entityStateMapper,
         inspectionFindingRepository);
     this.eventPublisher = eventPublisher;

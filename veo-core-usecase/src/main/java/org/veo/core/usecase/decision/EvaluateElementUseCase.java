@@ -56,7 +56,6 @@ public class EvaluateElementUseCase
   private final EntityStateMapper entityStateMapper;
   private final DomainRepository domainRepository;
   private final GenericElementRepository elementRepository;
-  private final Decider decider;
   private final Inspector inspector;
 
   @Override
@@ -65,7 +64,7 @@ public class EvaluateElementUseCase
         domainRepository.getByIdWithDecisionsAndInspections(
             input.domainId, userAccessRights.getClientId());
     var element = fetchOrCreateElement(input.element, userAccessRights, domain.getOwner());
-    decider.decide(element, domain);
+    element.evaluateDecisions(domain, null);
     var findings = inspector.inspect(element, domain, true);
     return new OutputData(element.getDecisionResults(domain), findings);
   }

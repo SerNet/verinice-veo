@@ -40,7 +40,6 @@ import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.InspectionFindingRepository;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.DesignatorService;
-import org.veo.core.usecase.decision.Decider;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +49,6 @@ import lombok.extern.slf4j.Slf4j;
 public class ElementBatchCreator {
   private final GenericElementRepository genericElementRepository;
   private final EventPublisher eventPublisher;
-  private final Decider decider;
   private final DesignatorService designatorService;
   private final InspectionFindingRepository inspectionFindingRepository;
 
@@ -129,7 +127,8 @@ public class ElementBatchCreator {
       composite.addParts((Set) parts);
     });
 
-    elements.forEach(element -> element.getDomains().forEach(d -> decider.decide(element, d)));
+    elements.forEach(
+        element -> element.getDomains().forEach(d -> element.evaluateDecisions(d, null)));
     elements.forEach(element ->
         element
             .getDomains()

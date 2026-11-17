@@ -39,7 +39,6 @@ import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.RetryableUseCase;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.decision.Decider;
 import org.veo.core.usecase.service.EntityStateMapper;
 import org.veo.core.usecase.service.RefResolverFactory;
 
@@ -56,7 +55,6 @@ public class CreateElementUseCase<TEntity extends Element>
   private final EventPublisher eventPublisher;
   private final IdentifiableFactory identifiableFactory;
   private final EntityStateMapper entityStateMapper;
-  private final Decider decider;
   private final InspectionFindingRepository inspectionFindingRepository;
 
   @Override
@@ -99,7 +97,7 @@ public class CreateElementUseCase<TEntity extends Element>
   }
 
   private void evaluateDecisions(TEntity entity) {
-    entity.getDomains().forEach(domain -> decider.decide(entity, domain));
+    entity.getDomains().forEach(domain -> entity.evaluateDecisions(domain, null));
   }
 
   @Override

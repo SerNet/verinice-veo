@@ -71,7 +71,6 @@ import org.veo.core.usecase.DomainChangeService;
 import org.veo.core.usecase.IncomingMessageHandler;
 import org.veo.core.usecase.MessageCreator;
 import org.veo.core.usecase.catalogitem.IncarnationDescriptionApplier;
-import org.veo.core.usecase.decision.Decider;
 import org.veo.core.usecase.domain.ElementBatchCreator;
 import org.veo.core.usecase.domain.GetAttributeValuesUseCase;
 import org.veo.core.usecase.inspection.Inspector;
@@ -267,10 +266,8 @@ public class ModuleConfiguration {
 
   @Bean
   public MigrationService migrationservice(
-      GenericElementRepository genericElementRepository,
-      Decider decider,
-      MessageCreator messageCreator) {
-    return new MigrationService(genericElementRepository, decider, messageCreator);
+      GenericElementRepository genericElementRepository, MessageCreator messageCreator) {
+    return new MigrationService(genericElementRepository, messageCreator);
   }
 
   @Bean
@@ -286,11 +283,6 @@ public class ModuleConfiguration {
   public ControlImplementationService controlImplementationService(
       ControlImplementationRepository ciRepo, RequirementImplementationRepository riRepo) {
     return new ControlImplementationService(ciRepo, riRepo);
-  }
-
-  @Bean
-  public Decider decider() {
-    return new Decider();
   }
 
   @Bean
@@ -324,15 +316,10 @@ public class ModuleConfiguration {
   ElementBatchCreator elementBatchCreator(
       GenericElementRepository genericElementRepository,
       EventPublisher eventPublisher,
-      Decider decider,
       DesignatorService designatorService,
       InspectionFindingRepository inspectionFindingRepository) {
     return new ElementBatchCreator(
-        genericElementRepository,
-        eventPublisher,
-        decider,
-        designatorService,
-        inspectionFindingRepository);
+        genericElementRepository, eventPublisher, designatorService, inspectionFindingRepository);
   }
 
   @Bean

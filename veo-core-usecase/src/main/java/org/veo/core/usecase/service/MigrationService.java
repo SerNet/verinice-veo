@@ -31,7 +31,6 @@ import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.usecase.DomainUpdateFailedException;
 import org.veo.core.usecase.MessageCreator;
 import org.veo.core.usecase.base.DomainSensitiveElementValidator;
-import org.veo.core.usecase.decision.Decider;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +39,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MigrationService {
   private final GenericElementRepository genericElementRepository;
-  private final Decider decider;
   private final MessageCreator messageCreator;
 
   public List<Element> updateElements(Domain oldDomain, Domain newDomain, String username)
@@ -75,7 +73,7 @@ public class MigrationService {
 
     newDomain.migrate(validElements, oldDomain);
 
-    validElements.forEach(element -> decider.decide(element, newDomain));
+    validElements.forEach(element -> element.evaluateDecisions(newDomain, null));
     invalidElements.addAll(
         validElements.stream()
             .filter(e -> !DomainSensitiveElementValidator.isValid(e, newDomain))
