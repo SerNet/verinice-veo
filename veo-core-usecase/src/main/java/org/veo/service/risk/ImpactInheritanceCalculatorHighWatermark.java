@@ -39,9 +39,10 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.jgrapht.Graph;
-import org.jgrapht.alg.connectivity.BiconnectivityInspector;
+import org.jgrapht.alg.connectivity.ConnectivityInspector;
 import org.jgrapht.alg.cycle.CycleDetector;
 import org.jgrapht.graph.AbstractGraph;
+import org.jgrapht.graph.AsSubgraph;
 import org.jgrapht.graph.DirectedPseudograph;
 import org.jgrapht.nio.dot.DOTExporter;
 
@@ -196,6 +197,12 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
       return elementsInCycle;
     }
 
+    // the weakly connected components of the graph, computed once for all roots
+    Map<FlyweightElement, Set<FlyweightElement>> componentByElement = new HashMap<>();
+    new ConnectivityInspector<>(data.completeGraph)
+        .connectedSets()
+        .forEach(component -> component.forEach(fe -> componentByElement.put(fe, component)));
+
     Set<RiskAffected<?, ?>> allRootelements =
         mapIdsToRiskAffected(allRiskElements, toIds(listOfRootElements));
     Map<String, RiskAffected<?, ?>> idToElement =
@@ -204,9 +211,12 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
     List<Element> changedElements = new ArrayList<>(data.completeGraph.vertexSet().size());
 
     listOfRootElements.stream()
-        .filter(notProcessed(processed))
         .sorted(byElementName(idToElement)) // walk roots in predictable manner
-        .map(fe -> createParameter(data, fe, allRiskElements))
+        // Filter after sorting: sorted() consumes all elements before passing any on, so a filter
+        // in front of it would see an empty 'processed' set, and every root would rebuild the
+        // graph of its whole component.
+        .filter(notProcessed(processed))
+        .map(fe -> createParameter(data, componentByElement.get(fe), allRiskElements))
         .forEach(parameter ->
             updateAllRootsInSubgraph(listOfRootElements, processed, changedElements, parameter));
 
@@ -283,7 +293,11 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
       return Collections.emptyList();
     }
 
-    UpdateAffectedGraphParameter parameter = createParameter(data, flyweightElement, null);
+    UpdateAffectedGraphParameter parameter =
+        createParameter(
+            data,
+            new ConnectivityInspector<>(data.completeGraph).connectedSetOf(flyweightElement),
+            null);
     if (parameter.detectCyclesContainingVertex(affectedElement)) {
       Set<Element> elementsInCycle = parameter.findCyclesContainingVertex(affectedElement);
       log.atDebug()
@@ -363,17 +377,14 @@ public class ImpactInheritanceCalculatorHighWatermark implements ImpactInheritan
         .forEach(e -> updateAffectedGraph(graphData, e, changedElements));
   }
 
-  /**
-   * Breaks the complete graph down to the connected set which contains the affectedElement and
-   * returns a new sub graph with the concrete elements.
-   */
+  /** Returns a new sub graph with the concrete elements of the given connected component. */
   private UpdateAffectedGraphParameter createParameter(
       FlyweightImpactInheritanceContext data,
-      FlyweightElement affectedElement,
+      Set<FlyweightElement> component,
       Set<RiskAffected<?, ?>> riskAffectedCache) {
 
     Graph<FlyweightElement, FlyweightLink> elementSubGraph =
-        new BiconnectivityInspector<>(data.completeGraph).getConnectedComponent(affectedElement);
+        new AsSubgraph<>(data.completeGraph, component);
 
     AbstractGraph<Element, CustomLink> elementGraph =
         buildElementGraph(
