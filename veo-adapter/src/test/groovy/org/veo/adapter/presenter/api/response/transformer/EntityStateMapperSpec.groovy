@@ -28,6 +28,7 @@ import org.veo.adapter.presenter.api.dto.full.FullAssetDto
 import org.veo.adapter.presenter.api.dto.full.FullDocumentDto
 import org.veo.adapter.presenter.api.dto.full.FullProcessDto
 import org.veo.core.entity.Asset
+import org.veo.core.entity.Client
 import org.veo.core.entity.Control
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Document
@@ -37,6 +38,7 @@ import org.veo.core.entity.Process
 import org.veo.core.entity.compliance.ImplementationStatus
 import org.veo.core.entity.compliance.Origination
 import org.veo.core.entity.compliance.RequirementImplementation
+import org.veo.core.entity.event.InboundLinkEvent
 import org.veo.core.entity.ref.ITypedId
 import org.veo.core.entity.ref.TypedId
 import org.veo.core.entity.state.PotentialImpactDomainAssociationState
@@ -232,5 +234,53 @@ class EntityStateMapperSpec extends Specification {
         1 * ri.setDocument(document)
         1 * ri.setLastRevisionBy(person)
         1 * ri.setNextRevisionDate(LocalDate.of(3000, 1, 1))
+    }
+
+    def "publishes link events only if requested (#publishLinkEvents)"() {
+        given:
+        def assetRef = Mock(IdRef)
+        def domain0Ref = Stub(DomainBaseIdRef) {
+            getId() >> domain0.id
+        }
+        def asset = Mock(Asset) {
+            owningClient >> Optional.of(Mock(Client))
+        }
+        def entity = Mock(Document)
+        def link = Mock(CustomLink) {
+            target >> asset
+            domain >> domain0
+            type >> 'hosting_server'
+        }
+        def dto = new FullDocumentDto().tap {
+            id = UUID.randomUUID()
+            domains = [(domain0.id): new DomainAssociationDto().tap {
+                    subType = "contract"
+                    status = "CONCLUDED"
+                }]
+            setLinks('hosting_server': [
+                new CustomLinkDto().tap {
+                    target = assetRef
+                    domains = [domain0Ref]
+                }
+            ])
+        }
+        idRefResolver.resolve(assetRef) >> asset
+        entity.findSubType(domain0) >> Optional.empty()
+        entity.getLinks(domain0) >> []
+        entity.getCustomAspects(domain0) >> []
+        entity.getDomains() >> []
+        entityFactory.createCustomLink(asset, entity, 'hosting_server', domain0) >> link
+        entity.applyLink(link) >> true
+
+        when:
+        entityStateMapper.mapState(dto, entity, true, false, false, publishLinkEvents, idRefResolver)
+
+        then:
+        expectedEvents * eventPublisher.publish(_ as InboundLinkEvent)
+
+        where:
+        publishLinkEvents | expectedEvents
+        true              | 1
+        false             | 0
     }
 }

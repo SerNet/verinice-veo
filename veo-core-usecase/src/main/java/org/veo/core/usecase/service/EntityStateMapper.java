@@ -121,12 +121,31 @@ public class EntityStateMapper {
       boolean firePartsChanged,
       boolean syncCustomAspects,
       IdRefResolver idRefResolver) {
+    mapState(
+        source,
+        target,
+        removeFromOtherDomains,
+        firePartsChanged,
+        syncCustomAspects,
+        true,
+        idRefResolver);
+  }
+
+  public <T extends Element, S extends ElementState<T>> void mapState(
+      S source,
+      T target,
+      boolean removeFromOtherDomains,
+      boolean firePartsChanged,
+      boolean syncCustomAspects,
+      boolean publishLinkEvents,
+      IdRefResolver idRefResolver) {
     mapToEntity(
         source.getDomainAssociationStates(),
         target,
         idRefResolver,
         removeFromOtherDomains,
-        syncCustomAspects);
+        syncCustomAspects,
+        publishLinkEvents);
     mapElement(source, target, idRefResolver);
     if (target instanceof Scope scope) {
       ScopeState scopeState = (ScopeState) source;
@@ -334,7 +353,11 @@ public class EntityStateMapper {
   }
 
   private <T extends Element> void applyLinks(
-      DomainAssociationState source, T target, IdRefResolver idRefResolver, Domain domain) {
+      DomainAssociationState source,
+      T target,
+      IdRefResolver idRefResolver,
+      Domain domain,
+      boolean publishLinkEvents) {
     var newLinks = source.getCustomLinkStates();
     // Remove old links that are absent in new links
     Set<CustomLink> removedLinks =
@@ -349,12 +372,14 @@ public class EntityStateMapper {
     // Apply new links
     newLinks.forEach(link -> {
       CustomLink newLink = mapLink(link, target, domain, idRefResolver);
-      if (target.applyLink(newLink)) {
+      if (target.applyLink(newLink) && publishLinkEvents) {
         publishLinkEvent(newLink, InboundLinkEvent.Operation.CREATION_OR_UPDATE);
       }
     });
 
-    removedLinks.forEach(rl -> publishLinkEvent(rl, InboundLinkEvent.Operation.DELETION));
+    if (publishLinkEvents) {
+      removedLinks.forEach(rl -> publishLinkEvent(rl, InboundLinkEvent.Operation.DELETION));
+    }
   }
 
   private <T extends Element> void applyCustomAspects(
@@ -379,7 +404,8 @@ public class EntityStateMapper {
       Element target,
       IdRefResolver idRefResolver,
       boolean removeFromOtherDomains,
-      boolean syncCustomAspects) {
+      boolean syncCustomAspects,
+      boolean publishLinkEvents) {
     BiConsumer<Domain, DomainAssociationState> customMapper = (domain, association) -> {};
 
     if (target instanceof Process process) {
@@ -424,7 +450,13 @@ public class EntityStateMapper {
     }
 
     mapToEntity(
-        domains, target, idRefResolver, customMapper, removeFromOtherDomains, syncCustomAspects);
+        domains,
+        target,
+        idRefResolver,
+        customMapper,
+        removeFromOtherDomains,
+        syncCustomAspects,
+        publishLinkEvents);
   }
 
   private Map<RiskDefinitionRef, PotentialProbability> mapPotentialProbability(
@@ -460,7 +492,8 @@ public class EntityStateMapper {
       IdRefResolver idRefResolver,
       BiConsumer<Domain, DomainAssociationState> customMapper,
       boolean removeFromOtherDomains,
-      boolean syncCustomAspects) {
+      boolean syncCustomAspects,
+      boolean publishLinkEvents) {
     if (removeFromOtherDomains) {
       target.getDomains().stream()
           .filter(d -> domains.stream().noneMatch(a -> a.getDomain().getId().equals(d.getId())))
@@ -481,7 +514,7 @@ public class EntityStateMapper {
                 target.setStatus(newStatus, domain);
               },
               () -> target.associateWithDomain(domain, newSubType, association.getStatus()));
-      applyLinks(association, target, idRefResolver, domain);
+      applyLinks(association, target, idRefResolver, domain, publishLinkEvents);
       applyCustomAspects(association, target, domain, syncCustomAspects);
 
       target.setAppliedCatalogItem(
