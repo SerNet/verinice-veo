@@ -26,8 +26,8 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementType;
-import org.veo.core.entity.event.ControlPartsChangedEvent;
 import org.veo.core.entity.event.ElementEvent;
+import org.veo.core.entity.event.PartsChangedEvent;
 import org.veo.core.entity.type.VeoType;
 
 import lombok.AccessLevel;
@@ -64,7 +64,7 @@ public class PartCountExpression implements VeoExpression {
 
   @Override
   public boolean isAffectedByEvent(ElementEvent event, Domain domain) {
-    return event instanceof ControlPartsChangedEvent;
+    return event instanceof PartsChangedEvent;
   }
 
   @Override

@@ -30,7 +30,7 @@ import org.veo.core.entity.condition.PartCountExpression
 import org.veo.core.entity.decision.DecisionRef
 import org.veo.core.entity.decision.firsthitpolicy.Condition
 import org.veo.core.entity.decision.firsthitpolicy.GreaterThanMatcher
-import org.veo.core.entity.event.ControlPartsChangedEvent
+import org.veo.core.entity.event.PartsChangedEvent
 import org.veo.core.repository.ControlRepository
 import org.veo.core.repository.InspectionFindingRepository
 import org.veo.listeners.ElementEventListener
@@ -80,7 +80,7 @@ class ElementEventListenerITSpec extends VeoSpringSpec {
         })
         control.addPart(part)
         controlDataRepository.save(control)
-        elementEventListener.handle(new ControlPartsChangedEvent(control, [] as Set))
+        elementEventListener.handle(new PartsChangedEvent(control, [] as Set))
 
         then: "the result for the part-dependent decision has been updated"
         with(controlDataRepository.findById(control.id, client.id).get()) {
@@ -106,7 +106,7 @@ class ElementEventListenerITSpec extends VeoSpringSpec {
         when: "deleting the control and passing an event"
         control.removePart(part)
         controlDataRepository.delete(control)
-        elementEventListener.handle(new ControlPartsChangedEvent(control, [part] as Set))
+        elementEventListener.handle(new PartsChangedEvent(control, [part] as Set))
 
         then:
         notThrown(Exception)

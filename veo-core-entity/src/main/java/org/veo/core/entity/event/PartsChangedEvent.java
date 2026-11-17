@@ -22,20 +22,21 @@ import static java.util.Collections.unmodifiableSet;
 import java.util.Set;
 import java.util.UUID;
 
-import org.veo.core.entity.Control;
+import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Element;
 
 import lombok.Value;
 
 @Value
-public class ControlPartsChangedEvent implements ElementEvent {
+public class PartsChangedEvent implements ElementEvent {
 
-  Control entity;
+  CompositeElement<?> entity;
   UUID clientId;
 
-  Set<Control> oldRecursiveParts;
+  Set<CompositeElement<?>> oldRecursiveParts;
 
-  public ControlPartsChangedEvent(Control entity, Set<Control> oldRecursiveParts) {
+  public PartsChangedEvent(
+      CompositeElement<?> entity, Set<? extends CompositeElement<?>> oldRecursiveParts) {
     this.entity = entity;
     this.clientId = entity.getOwningClient().orElseThrow().getId();
     this.oldRecursiveParts = unmodifiableSet(oldRecursiveParts);
@@ -48,8 +49,8 @@ public class ControlPartsChangedEvent implements ElementEvent {
 
   @Override
   @SuppressWarnings("unchecked")
-  public Class<? extends Element> getEntityType() {
-    return entity.getModelInterface();
+  public Class<CompositeElement<?>> getEntityType() {
+    return (Class<CompositeElement<?>>) entity.getModelInterface();
   }
 
   @Override

@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.event.ControlPartsChangedEvent;
+import org.veo.core.entity.event.PartsChangedEvent;
 import org.veo.service.ControlImplementationService;
 
 import lombok.RequiredArgsConstructor;
@@ -45,12 +45,16 @@ public class ControlChangeListener {
 
   @EventListener
   @Transactional(propagation = REQUIRED)
-  public void handle(ControlPartsChangedEvent event) {
+  public void handle(PartsChangedEvent event) {
     if (!event.getEntityType().isAssignableFrom(Control.class)) {
       return;
     }
-    handleRemovedParts(event.getOldRecursiveParts(), event.getNewRecursiveParts());
-    handleAddedParts(event.getEntity(), event.getOldRecursiveParts(), event.getNewRecursiveParts());
+    Control control = (Control) event.getEntity();
+    Set<Control> oldRecursiveParts =
+        event.getOldRecursiveParts().stream().map(Control.class::cast).collect(Collectors.toSet());
+
+    handleRemovedParts(oldRecursiveParts, event.getNewRecursiveParts());
+    handleAddedParts(control, oldRecursiveParts, event.getNewRecursiveParts());
   }
 
   private void handleAddedParts(

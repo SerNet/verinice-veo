@@ -167,6 +167,11 @@ public class InspectionFindingRepositoryImpl implements InspectionFindingReposit
   }
 
   @Override
+  public void removeInspections(Element element) {
+    inspectionFindingDataRepository.deleteAllByElementIdIn(List.of(element.getId()));
+  }
+
+  @Override
   public void removeInspections(Domain domain, String inspectionId) {
     inspectionFindingDataRepository.deleteAllByDomainAndInspectionId(domain, inspectionId);
   }

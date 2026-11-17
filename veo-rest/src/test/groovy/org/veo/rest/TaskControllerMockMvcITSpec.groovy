@@ -36,6 +36,7 @@ import org.veo.core.entity.compliance.ImplementationStatus
 import org.veo.core.entity.condition.ConstantExpression
 import org.veo.core.entity.condition.EqualsExpression
 import org.veo.core.entity.condition.MaxRiskExpression
+import org.veo.core.entity.condition.PartCountExpression
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.InspectionFindingRepository
 import org.veo.core.usecase.TemplateItems
@@ -44,6 +45,7 @@ import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ControlRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.PersonRepositoryImpl
+import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
 class TaskControllerMockMvcITSpec extends VeoMvcSpec {
@@ -56,6 +58,9 @@ class TaskControllerMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     private PersonRepositoryImpl personRepository
+
+    @Autowired
+    private ProcessRepositoryImpl processRepository
 
     @Autowired
     private ControlRepositoryImpl controlRepository
@@ -407,6 +412,61 @@ class TaskControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the task is solved"
         with(parseJson(get("/domains/${testDomain.id}/tasks?unit=${unit.id}"))) {
             totalItemCount == 0
+        }
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "inspection tasks are updated when a relevant part is deleted"() {
+        given: "an inspection reporting partless processes & a process with a part"
+        def processGroupId
+        def processPartId
+        txTemplate.execute {
+            testDomain.applyInspection("check", newInspection {
+                elementType = ElementType.PROCESS
+                description = TranslatedText.of {"No parts at all"}
+                condition = new EqualsExpression(
+                                new PartCountExpression("BusinessProcess"),
+                                new ConstantExpression(0)
+                        )
+            })
+            testDomain = domainDataRepository.save(testDomain)
+            def part = processRepository.save(newProcess(unit) {
+                name = "party time"
+                associateWithDomain(testDomain, "BusinessProcess", "NEW")
+            })
+            def group = processRepository.save(newProcess(unit) {
+                name = "sum of its parts"
+                associateWithDomain(testDomain, "BusinessProcess", "NEW")
+                parts = [part]
+            })
+            inspectionFindingRepository.updateInspections(testDomain, false)
+            processPartId = part.id
+            processGroupId = group.id
+        }
+
+        expect: "the part is reported to be partless"
+        with(parseJson(get("/domains/${testDomain.id}/tasks?unit=${unit.id}"))) {
+            totalItemCount == 1
+            with(items[0]) {
+                type == "inspection-finding"
+                element.name == "party time"
+                summary.en == "No parts at all"
+            }
+        }
+
+        when: "deleting the part"
+        delete("/processes/$processPartId", [
+            'If-Match': getETag(get("/processes/$processPartId"))
+        ])
+
+        then: "the former group is now reported to be partless"
+        with(parseJson(get("/domains/${testDomain.id}/tasks?unit=${unit.id}"))) {
+            totalItemCount == 1
+            with(items[0]) {
+                type == "inspection-finding"
+                element.name == "sum of its parts"
+                summary.en == "No parts at all"
+            }
         }
     }
 

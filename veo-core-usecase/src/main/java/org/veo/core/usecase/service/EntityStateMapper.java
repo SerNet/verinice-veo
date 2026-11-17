@@ -49,8 +49,8 @@ import org.veo.core.entity.SystemMessage;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.compliance.RequirementImplementation;
-import org.veo.core.entity.event.ControlPartsChangedEvent;
 import org.veo.core.entity.event.InboundLinkEvent;
+import org.veo.core.entity.event.PartsChangedEvent;
 import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.DomainRiskReferenceProvider;
@@ -249,7 +249,7 @@ public class EntityStateMapper {
     // So far we only publish changes for control parts.
     // Do not publish if entity has no client.
     if (entity instanceof Control control && entity.getOwningClient().isPresent()) {
-      eventPublisher.publish(new ControlPartsChangedEvent(control, oldParts));
+      eventPublisher.publish(new PartsChangedEvent(control, oldParts));
     }
   }
 

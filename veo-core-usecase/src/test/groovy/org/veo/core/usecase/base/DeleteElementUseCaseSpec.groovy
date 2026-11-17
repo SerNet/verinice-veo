@@ -29,10 +29,12 @@ import org.veo.core.entity.Scenario
 import org.veo.core.entity.Scope
 import org.veo.core.entity.event.DomainEvent
 import org.veo.core.entity.event.InboundLinkEvent
+import org.veo.core.entity.event.PartsChangedEvent
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent
 import org.veo.core.repository.AssetRepository
 import org.veo.core.repository.ControlRepository
 import org.veo.core.repository.DocumentRepository
+import org.veo.core.repository.InspectionFindingRepository
 import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.ProcessRepository
 import org.veo.core.repository.ScopeRepository
@@ -48,10 +50,11 @@ class DeleteElementUseCaseSpec extends UseCaseSpec {
     PersonRepository personRepository = Mock()
     ProcessRepository processRepository = Mock()
     ScopeRepository scopeRepository = Mock()
+    InspectionFindingRepository inspectionFindingRepository = Mock()
     EventPublisher eventPublisher = Mock()
     UserAccessRights user = Mock()
 
-    def usecase = new DeleteElementUseCase(repositoryProvider, eventPublisher)
+    def usecase = new DeleteElementUseCase(repositoryProvider, inspectionFindingRepository, eventPublisher)
 
     def setup() {
         repositoryProvider.getElementRepositoryFor(Asset) >> assetRepository
@@ -75,6 +78,7 @@ class DeleteElementUseCaseSpec extends UseCaseSpec {
             getOwningClient() >> Optional.of(existingClient)
             getRequirementImplementations() >> []
             getControlImplementations() >> []
+            getComposites() >> []
             links >> [
                 Mock(CustomLink) {
                     type >> "notMyType"
@@ -110,6 +114,7 @@ class DeleteElementUseCaseSpec extends UseCaseSpec {
         Person person = Mock() {
             getOwner() >> existingUnit
             getId() >> id
+            getComposites() >> []
             links >> []
         }
 
@@ -119,6 +124,50 @@ class DeleteElementUseCaseSpec extends UseCaseSpec {
         then:
         1 * personRepository.getById(id, user) >> person
         1 * personRepository.deleteById(id)
+    }
+
+    def "Delete a part" () {
+        given:
+        Person teamA = Mock() {
+            id >> UUID.randomUUID()
+            owningClient >> Optional.of(existingClient)
+            modelInterface >> Person
+        }
+        Person teamB = Mock() {
+            id >> UUID.randomUUID()
+            owningClient >> Optional.of(existingClient)
+            modelInterface >> Person
+        }
+        Person person = Mock() {
+            owner >> existingUnit
+            id >> UUID.randomUUID()
+            composites >> [teamA, teamB]
+            owningClient >> Optional.of(existingClient)
+            links >> []
+        }
+        Person otherPerson = Mock() {}
+
+        teamA.partsRecursively >> [person, otherPerson]
+        teamB.partsRecursively >> [person]
+
+        when:
+        usecase.execute(new InputData(Person, person.id), user)
+
+        then:
+        1 * personRepository.getById(person.id, user) >> person
+        1 * personRepository.deleteById(person.id)
+        1 * eventPublisher.publish({ DomainEvent event->
+            event instanceof PartsChangedEvent
+            event.entityType == Person
+            event.entityId == teamA.id
+            event.oldRecursiveParts == [person, otherPerson] as Set
+        })
+        1 * eventPublisher.publish({ DomainEvent event->
+            event instanceof PartsChangedEvent
+            event.entityType == Person
+            event.entityId == teamB.id
+            event.oldRecursiveParts == [person] as Set
+        })
     }
 
     def "Delete a scope"() {

@@ -33,7 +33,7 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.ElementType
 import org.veo.core.entity.Unit
 import org.veo.core.entity.compliance.ReqImplRef
-import org.veo.core.entity.event.ControlPartsChangedEvent
+import org.veo.core.entity.event.PartsChangedEvent
 import org.veo.listeners.ControlChangeListener
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
@@ -56,7 +56,7 @@ class ControlImplementationServiceITSpec extends VeoSpringSpec {
      * These events are otherwise published by the {@code EntityStateMapper}.
      */
     void publishPartsChanged(Control control, Set<Control> oldParts) {
-        publisher.publishEvent(new ControlPartsChangedEvent(control, oldParts))
+        publisher.publishEvent(new PartsChangedEvent(control, oldParts))
     }
 
     static class Config {

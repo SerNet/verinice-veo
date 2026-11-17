@@ -44,5 +44,7 @@ public interface InspectionFindingRepository {
 
   void removeInspections(Domain domain);
 
+  void removeInspections(Element element);
+
   void removeInspections(Domain domain, String inspectionId);
 }
