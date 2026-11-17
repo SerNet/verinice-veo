@@ -94,13 +94,13 @@ public class RiskComponentChangeListener {
         });
   }
 
-  @TransactionalEventListener(condition = "#event.source != @riskService")
+  @TransactionalEventListener(
+      condition =
+          "#event.source != @riskService"
+              + " && #event.operation.name() == 'DELETION'"
+              + " && T(org.veo.core.entity.RiskAffected).isAssignableFrom(#event.entityType)")
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   public void handle(InboundLinkEvent event) {
-    if (event.getOperation() != InboundLinkEvent.Operation.DELETION
-        || !RiskAffected.class.isAssignableFrom(event.getEntityType())) {
-      return;
-    }
     Element element =
         elementRepository.getById(event.getEntityId(), event.getEntityType(), event.getClientId());
 
