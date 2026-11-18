@@ -66,7 +66,7 @@ public interface RiskAffectedDataRepository<T extends RiskAffectedData<?, ?>>
       left join fetch e.controlImplementations
       where e.id in ?1
       """)
-  Set<T> findAllWithCIs(Iterable<UUID> ids);
+  List<T> findAllWithCIs(Iterable<UUID> ids);
 
   @Nonnull
   @Query(
@@ -75,7 +75,7 @@ public interface RiskAffectedDataRepository<T extends RiskAffectedData<?, ?>>
       left join fetch e.requirementImplementations
       where e.id in ?1
       """)
-  Set<T> findAllWithRIs(Iterable<UUID> ids);
+  List<T> findAllWithRIs(Iterable<UUID> ids);
 
   // RIs must be joined twice, because the non-matching RIs would be missing from the returned
   // elements if the join-fetched RIs were used in the `where` clause.

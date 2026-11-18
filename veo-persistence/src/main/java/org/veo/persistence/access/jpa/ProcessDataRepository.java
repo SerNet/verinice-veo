@@ -60,5 +60,5 @@ public interface ProcessDataRepository extends CompositeRiskAffectedDataReposito
 
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = "riskValuesAspects")
-  Set<ProcessData> findAllWithRiskValuesAspectsByIdIn(List<UUID> ids);
+  List<ProcessData> findAllWithRiskValuesAspectsByIdIn(List<UUID> ids);
 }

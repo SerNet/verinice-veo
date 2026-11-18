@@ -61,5 +61,5 @@ public interface AssetDataRepository extends CompositeRiskAffectedDataRepository
 
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = "riskValuesAspects")
-  Set<AssetData> findAllWithRiskValuesAspectsByIdIn(List<UUID> ids);
+  List<AssetData> findAllWithRiskValuesAspectsByIdIn(List<UUID> ids);
 }
