@@ -19,6 +19,7 @@ package org.veo.persistence.access.query;
 
 import java.util.UUID;
 
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.JoinType;
 
 import org.springframework.data.jpa.domain.Specification;
@@ -52,6 +53,7 @@ class CompositeElementQueryImpl<
       ProcessDataRepository processDataRepository,
       ScenarioDataRepository scenarioDataRepository,
       ScopeDataRepository scopeDataRepository,
+      EntityManager entityManager,
       Client client) {
     super(
         repo,
@@ -63,6 +65,7 @@ class CompositeElementQueryImpl<
         processDataRepository,
         scenarioDataRepository,
         scopeDataRepository,
+        entityManager,
         client);
   }
 

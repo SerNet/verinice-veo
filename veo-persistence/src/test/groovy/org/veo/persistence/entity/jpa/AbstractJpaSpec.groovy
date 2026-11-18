@@ -42,6 +42,9 @@ import org.veo.persistence.access.jpa.ScopeDataRepository
 import org.veo.persistence.access.query.ElementQueryFactory
 import org.veo.test.VeoSpec
 
+import jakarta.persistence.EntityManager
+import jakarta.persistence.PersistenceContext
+
 @DataJpaTest
 @ContextConfiguration(classes = [VeoJpaConfiguration, JpaTestConfig])
 @AutoConfigureTestDatabase(replace = NONE)
@@ -75,6 +78,9 @@ abstract class AbstractJpaSpec extends VeoSpec {
     @Autowired
     ScopeDataRepository scopeDataRepository
 
+    @PersistenceContext
+    private EntityManager queryEntityManager
+
     ElementQueryFactory elementQueryFactory
 
     def setup() {
@@ -88,6 +94,7 @@ abstract class AbstractJpaSpec extends VeoSpec {
                 processDataRepository,
                 scenarioDataRepository,
                 scopeDataRepository,
+                queryEntityManager,
         )
     }
 

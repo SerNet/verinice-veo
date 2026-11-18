@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
@@ -34,6 +35,8 @@ import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 
 import org.apache.commons.collections4.ListUtils;
+import org.hibernate.FlushMode;
+import org.hibernate.Session;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -92,6 +95,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   private final ProcessDataRepository processDataRepository;
   private final ScenarioDataRepository scenarioDataRepository;
   private final ScopeDataRepository scopeDataRepository;
+  private final EntityManager entityManager;
   protected Specification<TDataClass> mySpec;
   private boolean fetchAppliedCatalogItems;
   private boolean fetchScopesAndScopeMembers;
@@ -113,6 +117,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
       ProcessDataRepository processDataRepository,
       ScenarioDataRepository scenarioDataRepository,
       ScopeDataRepository scopeDataRepository,
+      EntityManager entityManager,
       Client client) {
     this.assetDataRepository = assetDataRepository;
     this.controlDataRepository = controlDataRepository;
@@ -123,6 +128,7 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
     this.scenarioDataRepository = scenarioDataRepository;
     this.scopeDataRepository = scopeDataRepository;
     this.dataRepository = repo;
+    this.entityManager = entityManager;
     mySpec = createSpecification(client);
   }
 
@@ -340,7 +346,15 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   public PagedResult<TInterface, String> execute(PagingConfiguration<String> pagingConfiguration) {
     Page<TDataClass> items = dataRepository.findAll(mySpec, toPageable(pagingConfiguration));
     List<UUID> ids = items.stream().map(ElementData::getId).toList();
-    fullyLoadItems(ids);
+    @SuppressWarnings("PMD.CloseResource")
+    var session = entityManager.unwrap(Session.class);
+    var flushMode = session.getHibernateFlushMode();
+    session.setHibernateFlushMode(FlushMode.COMMIT);
+    try {
+      fullyLoadItems(ids);
+    } finally {
+      session.setHibernateFlushMode(flushMode);
+    }
 
     return new PagedResult<>(
         pagingConfiguration,

@@ -17,6 +17,8 @@
  */
 package org.veo.persistence.access.query;
 
+import jakarta.persistence.EntityManager;
+
 import org.springframework.stereotype.Component;
 
 import org.veo.core.entity.Asset;
@@ -58,6 +60,7 @@ public class ElementQueryFactory {
   private final ProcessDataRepository processDataRepository;
   private final ScenarioDataRepository scenarioDataRepository;
   private final ScopeDataRepository scopeDataRepository;
+  private final EntityManager entityManager;
 
   public ElementQuery<Element> queryElements(Client client) {
     return query(client, elementRepository);
@@ -107,6 +110,7 @@ public class ElementQueryFactory {
         processDataRepository,
         scenarioDataRepository,
         scopeDataRepository,
+        entityManager,
         client);
   }
 
@@ -123,6 +127,7 @@ public class ElementQueryFactory {
         processDataRepository,
         scenarioDataRepository,
         scopeDataRepository,
+        entityManager,
         client);
   }
 }

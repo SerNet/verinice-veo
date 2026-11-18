@@ -17,6 +17,7 @@
  */
 package org.veo.persistence.access
 
+import org.hibernate.Session
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -34,6 +35,8 @@ import org.veo.persistence.access.query.ElementQueryImpl
 import org.veo.persistence.entity.jpa.AbstractJpaSpec
 import org.veo.persistence.entity.jpa.ClientData
 import org.veo.persistence.entity.jpa.UnitData
+
+import jakarta.persistence.EntityManager
 
 class ElementQueryImplSpec extends AbstractJpaSpec {
 
@@ -746,7 +749,10 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
     def 'Paging configuration is correctly passed to data repository'() {
         given: 'a repository'
         AssetDataRepository dataRepository = Mock()
-        def query = new ElementQueryImpl(dataRepository, dataRepository, null, null, null, null, null, null, null, client)
+        EntityManager entityManager = Mock {
+            unwrap(Session) >> Mock(Session)
+        }
+        def query = new ElementQueryImpl(dataRepository, dataRepository, null, null, null, null, null, null, null, entityManager, client)
 
         when:
         query.execute(new PagingConfiguration<>(2, 0, 'foo', SortOrder.ASCENDING))
