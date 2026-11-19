@@ -55,6 +55,8 @@ allprojects {
             importOrder('java', 'javax', 'org', 'com', 'org.veo', '')
             replaceRegex('Excessive line breaks', /\n{3,}/, '\n\n')
             replaceRegex('No space between right round and left curly bracket', /\)\{/, ') {')
+            // work around https://github.com/groovy/groovy-eclipse/issues/1707
+            replaceRegex('Empty map literal', /\[: +\]/, '[:]')
         }
         format 'xml', {
             target 'src/**/*.xml', 'misc/eclipse/java-format.xml'

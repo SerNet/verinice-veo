@@ -306,7 +306,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
                     owner: [targetUri: "/units/$unitId"],
                     type: 'asset',
                     controlImplementations : [
-                        [: ]
+                        [:]
                     ]
                 ]
             ],
