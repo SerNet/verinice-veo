@@ -22,6 +22,7 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Domain
 import org.veo.core.entity.ElementType
+import org.veo.core.entity.TaskConfiguration
 import org.veo.core.entity.TranslatedText
 import org.veo.core.entity.condition.ConstantExpression
 import org.veo.core.entity.condition.PartCountExpression
@@ -134,5 +135,159 @@ class EvaluationMvcITSpec extends VeoMvcSpec{
 
         then: "the decision has been evaluated"
         parseJson(get("/domains/${domain.id}/incidents/$incidentId")).decisionResults.alwaysTrue?.value == true
+    }
+
+    def "findings are shown for unclear responsibilities"() {
+        given: "two inspection tasks in the domain"
+        domain.applyElementTypeDefinition(newElementTypeDefinition(ElementType.DOCUMENT, domain) {
+            it.subTypes.specList = newSubTypeDefinition {}
+            it.links.maintainer = newLinkDefinition(ElementType.PERSON, "techie")
+            it.translations[EN] = [
+                maintainer: "Maintainer",
+                document_specList_singular: "Spec list",
+                document_specList_plural: "Spec lists",
+                document_specList_status_NEW: "new",
+            ]
+        })
+        domain.applyInspection("checkA", newInspection {
+            it.elementType = ElementType.DOCUMENT
+            it.condition = new ConstantExpression(false)
+        })
+        domain.taskConfiguration = new TaskConfiguration([
+            checkA: new TaskConfiguration.InspectionTaskTemplate(
+                    TranslatedText.of {"Check thing A"},
+                    "maintainer",
+                    ),
+        ])
+        domain = domainDataRepository.save(domain)
+
+        and:
+        def person1Id = executeInTransaction {
+            def unit = unitDataRepository.findById(UUID.fromString(unitId)).get()
+            personDataRepository.save(newPerson(unit) {}).idAsString
+        }
+        def person2Id = executeInTransaction {
+            def unit = unitDataRepository.findById(UUID.fromString(unitId)).get()
+            personDataRepository.save(newPerson(unit) {}).idAsString
+        }
+
+        when: "an element has no responsibility links"
+        def findings = parseJson(post("/domains/${domain.id}/documents/evaluation", [
+            name: "docer",
+            subType: "specList",
+            status: "NEW",
+            owner: [targetUri: "/units/$unitId"],
+        ], 200)).inspectionFindings
+
+        then:
+        findings.size() == 1
+        findings[0].severity == "HINT"
+        findings[0].description.en == "No person is responsible for the task type 'Check thing A'. To assign a responsible person, please link them as 'Maintainer'."
+
+        when: "an element has multiple responsibility links"
+        findings = parseJson(post("/domains/${domain.id}/documents/evaluation", [
+            name: "docer",
+            subType: "specList",
+            status: "NEW",
+            owner: [targetUri: "/units/$unitId"],
+            links: [
+                maintainer: [
+                    [target: [targetUri: "/persons/$person1Id"]],
+                    [target: [targetUri: "/persons/$person2Id"]],
+                ]
+            ]
+        ], 200)).inspectionFindings
+
+        then:
+        findings.size() == 1
+        findings[0].severity == "WARNING"
+        findings[0].description.en == "Multiple persons are responsible for the task type 'Check thing A'. A task requires a single responsible person. Please remove all 'Maintainer' links except for one."
+
+        when: "an element has one responsibility link"
+        findings = parseJson(post("/domains/${domain.id}/documents/evaluation", [
+            name: "docer",
+            subType: "specList",
+            status: "NEW",
+            owner: [targetUri: "/units/$unitId"],
+            links: [
+                maintainer: [
+                    [target: [targetUri: "/persons/$person1Id"]],
+                ]
+            ]
+        ], 200)).inspectionFindings
+
+        then:
+        findings.size() == 0
+
+        when: "multiple task templates are affected"
+        domain.applyInspection("checkB", newInspection {
+            it.elementType = ElementType.DOCUMENT
+            it.condition = new ConstantExpression(false)
+        })
+        domain.taskConfiguration = new TaskConfiguration([
+            checkA: new TaskConfiguration.InspectionTaskTemplate(
+                    TranslatedText.of {"Check thing A"},
+                    "maintainer",
+                    ),
+            checkB: new TaskConfiguration.InspectionTaskTemplate(
+                    TranslatedText.of {"Check thing B"},
+                    "maintainer",
+                    ),
+        ])
+        domainDataRepository.save(domain)
+
+        and: "an element has no responsibility links"
+        findings = parseJson(post("/domains/${domain.id}/documents/evaluation", [
+            name: "docer",
+            subType: "specList",
+            status: "NEW",
+            owner: [targetUri: "/units/$unitId"],
+        ], 200)).inspectionFindings
+
+        then:
+        findings.size() == 1
+        findings[0].severity == "HINT"
+        findings[0].description.en == "No person is responsible for the following task type(s):\n" +
+                "• Check thing A\n" +
+                "• Check thing B\n" +
+                "To assign a responsible person, please link them as 'Maintainer'."
+
+        when: "an element has multiple responsibility links"
+        findings = parseJson(post("/domains/${domain.id}/documents/evaluation", [
+            name: "docer",
+            subType: "specList",
+            status: "NEW",
+            owner: [targetUri: "/units/$unitId"],
+            links: [
+                maintainer: [
+                    [target: [targetUri: "/persons/$person1Id"]],
+                    [target: [targetUri: "/persons/$person2Id"]],
+                ]
+            ]
+        ], 200)).inspectionFindings
+
+        then:
+        findings.size() == 1
+        findings[0].severity == "WARNING"
+        findings[0].description.en == "Multiple persons are responsible for the following task type(s):\n" +
+                "• Check thing A\n" +
+                "• Check thing B\n" +
+                "A task requires a single responsible person. Please remove all 'Maintainer' links except for one."
+
+        when: "an element has one responsibility link"
+        findings = parseJson(post("/domains/${domain.id}/documents/evaluation", [
+            name: "docer",
+            subType: "specList",
+            status: "NEW",
+            owner: [targetUri: "/units/$unitId"],
+            links: [
+                maintainer: [
+                    [target: [targetUri: "/persons/$person1Id"]],
+                ]
+            ]
+        ], 200)).inspectionFindings
+
+        then:
+        findings.size() == 0
     }
 }

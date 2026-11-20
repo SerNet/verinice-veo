@@ -21,7 +21,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import jakarta.validation.constraints.NotNull;
@@ -32,6 +35,7 @@ import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.RiskAffected;
+import org.veo.core.entity.TaskConfiguration;
 import org.veo.core.entity.TranslatedText;
 import org.veo.core.entity.ValidationError;
 import org.veo.core.entity.compliance.ControlImplementation;
@@ -54,8 +58,11 @@ public class Inspector {
 
   public List<Finding> inspect(Element element, Domain domain, boolean includeDomainInspections) {
     var result =
-        Stream.concat(
-            formatDecisionResults(element, domain), getMigrationFindings(element, domain).stream());
+        Stream.of(
+                formatDecisionResults(element, domain),
+                getResponsibilityFindings(element, domain),
+                getMigrationFindings(element, domain).stream())
+            .flatMap(Function.identity());
     if (includeDomainInspections) {
       result =
           Stream.concat(
@@ -86,6 +93,64 @@ public class Inspector {
                                 .getDecision(e.getKey().getKeyRef())
                                 .format(e.getValue(), locale, domain))),
                 Collections.emptyList()));
+  }
+
+  private Stream<Finding> getResponsibilityFindings(Element element, Domain domain) {
+    var taskTemplatesByLink =
+        domain.getTaskConfiguration().inspectionTaskTemplates().entrySet().stream()
+            .filter(e -> domain.getInspection(e.getKey()).applicableTo(element, domain))
+            .collect(Collectors.groupingBy(e -> e.getValue().responsibilityLink()));
+    return taskTemplatesByLink.entrySet().stream()
+        .sorted(Map.Entry.comparingByKey())
+        .flatMap(linkWithTaskTemplates -> {
+          var linkType = linkWithTaskTemplates.getKey();
+          var links = element.getLinks(linkType, domain);
+          if (links.isEmpty()) {
+            return getResponsibilityFindings(
+                "hint_no_responsible_persons_linked_for_single_task_type",
+                "hint_no_responsible_persons_linked_for_multiple_task_types",
+                Severity.HINT,
+                linkWithTaskTemplates.getValue(),
+                linkType,
+                element,
+                domain);
+          }
+          if (links.size() > 1) {
+            return getResponsibilityFindings(
+                "hint_multiple_responsible_persons_linked_for_single_task_type",
+                "hint_multiple_responsible_persons_linked_for_multiple_task_types",
+                Severity.WARNING,
+                linkWithTaskTemplates.getValue(),
+                linkType,
+                element,
+                domain);
+          }
+          return Stream.empty();
+        });
+  }
+
+  private static Stream<Finding> getResponsibilityFindings(
+      String singleTypeMessage,
+      String multiTypeMessage,
+      Severity severity,
+      List<Map.Entry<String, TaskConfiguration.InspectionTaskTemplate>> taskTemplates,
+      String linkType,
+      Element element,
+      Domain domain) {
+    return Stream.of(
+            ValidationError.localized(
+                taskTemplates.size() == 1 ? singleTypeMessage : multiTypeMessage,
+                List.of(
+                    l ->
+                        taskTemplates.size() == 1
+                            ? taskTemplates.stream().findFirst().get().getValue().summary().get(l)
+                            : taskTemplates.stream()
+                                .map(e -> e.getValue().summary().get(l))
+                                .map("• %s"::formatted)
+                                .sorted()
+                                .collect(Collectors.joining("\n")),
+                    l -> domain.findTranslation(element.getType(), linkType, l))))
+        .map(e -> new Finding(severity, TranslatedText.of(e::getMessage), List.of()));
   }
 
   private Collection<Finding> getMigrationFindings(Element element, Domain domain) {
