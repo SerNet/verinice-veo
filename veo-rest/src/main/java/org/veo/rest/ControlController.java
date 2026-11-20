@@ -245,6 +245,7 @@ public class ControlController extends AbstractCompositeElementController<Contro
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               array = @ArraySchema(schema = @Schema(implementation = Finding.class))))
   @ApiResponse(responseCode = "404", description = "Control not found")
+  @Deprecated
   @GetMapping(value = UUID_PARAM_SPEC + "/inspection")
   public @Valid CompletableFuture<ResponseEntity<List<Finding>>> inspect(
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)

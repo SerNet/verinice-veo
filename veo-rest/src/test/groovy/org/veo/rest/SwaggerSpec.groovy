@@ -941,6 +941,14 @@ class SwaggerSpec extends VeoSpringSpec {
         endpoint                                                                       | method
         '/content-creation/domains/{id}/element-type-definitions/{type}/object-schema' | 'POST'
         '/schemas/{type}'                                                              | 'GET'
+        '/assets/{uuid}/inspection'                                                    | 'GET'
+        '/controls/{uuid}/inspection'                                                  | 'GET'
+        '/documents/{uuid}/inspection'                                                 | 'GET'
+        '/incidents/{uuid}/inspection'                                                 | 'GET'
+        '/persons/{uuid}/inspection'                                                   | 'GET'
+        '/processes/{uuid}/inspection'                                                 | 'GET'
+        '/scenarios/{uuid}/inspection'                                                 | 'GET'
+        '/scopes/{uuid}/inspection'                                                    | 'GET'
     }
 
     def "Inspection schema is complete"() {

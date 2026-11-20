@@ -463,6 +463,7 @@ public class DomainController extends AbstractEntityController {
   @Operation(summary = "Retrieve inspections")
   @ApiResponse(responseCode = "200", description = "Inspections found")
   @ApiResponse(responseCode = "404", description = "Domain not found")
+  @Deprecated
   public @Valid Future<ResponseEntity<List<ShortInspectionDto>>> getInspections(
       @PathVariable UUID domainId) {
     return useCaseInteractor

@@ -251,6 +251,7 @@ public class PersonController extends AbstractCompositeElementController<Person,
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               array = @ArraySchema(schema = @Schema(implementation = Finding.class))))
   @ApiResponse(responseCode = "404", description = "Person not found")
+  @Deprecated
   @GetMapping(value = UUID_PARAM_SPEC + "/inspection")
   public @Valid CompletableFuture<ResponseEntity<List<Finding>>> inspect(
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
