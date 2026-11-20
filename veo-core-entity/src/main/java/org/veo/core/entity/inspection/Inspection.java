@@ -82,11 +82,7 @@ public class Inspection {
   @JsonProperty final List<Suggestion> suggestions = new ArrayList<>();
 
   public Optional<Finding> run(Element element, Domain domain) {
-    if (elementType != null && !elementType.matches(element)) {
-      return Optional.empty();
-    }
-    if (elementSubType != null
-        && !elementSubType.equals(element.findSubType(domain).orElse(null))) {
+    if (!applicableTo(element, domain)) {
       return Optional.empty();
     }
     if (Objects.equals(condition.getValue(element, domain), true)) {
@@ -121,5 +117,12 @@ public class Inspection {
     }
     suggestions.forEach(s -> s.selfValidate(getElementType(), domain));
     condition.selfValidate(domain, getElementType());
+  }
+
+  public boolean applicableTo(Element element, Domain domain) {
+    if (elementType != null && !elementType.matches(element)) {
+      return false;
+    }
+    return elementSubType == null || elementSubType.equals(element.getSubType(domain));
   }
 }
