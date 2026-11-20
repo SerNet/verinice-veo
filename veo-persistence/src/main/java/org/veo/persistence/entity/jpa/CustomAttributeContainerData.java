@@ -31,6 +31,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.Mutability;
 import org.hibernate.type.SqlTypes;
 
 import org.veo.core.entity.CustomAttributeContainer;
@@ -68,6 +69,7 @@ public abstract class CustomAttributeContainerData implements CustomAttributeCon
   private Domain domain;
 
   @JdbcTypeCode(SqlTypes.JSON)
+  @Mutability(JsonStructureMutabilityPlan.class)
   @Column(columnDefinition = "jsonb")
   private Map<String, Object> attributes = new HashMap<>();
 

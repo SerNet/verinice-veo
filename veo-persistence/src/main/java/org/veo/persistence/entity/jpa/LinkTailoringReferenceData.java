@@ -24,6 +24,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.Mutability;
 import org.hibernate.type.SqlTypes;
 
 import org.veo.core.entity.CatalogItem;
@@ -41,6 +42,7 @@ public class LinkTailoringReferenceData extends CatalogTailoringReferenceData
   @ToString.Include private String linkType;
 
   @JdbcTypeCode(SqlTypes.JSON)
+  @Mutability(JsonStructureMutabilityPlan.class)
   @Column(columnDefinition = "jsonb")
   private Map<String, Object> attributes = new HashMap<>();
 

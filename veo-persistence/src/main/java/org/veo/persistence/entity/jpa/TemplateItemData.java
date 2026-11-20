@@ -33,6 +33,7 @@ import javax.annotation.Nullable;
 
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.Mutability;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.dialect.type.PostgreSQLEnumJdbcType;
 import org.hibernate.type.SqlTypes;
@@ -117,6 +118,7 @@ public abstract class TemplateItemData<
   protected String status;
 
   @JdbcTypeCode(SqlTypes.JSON)
+  @Mutability(JsonStructureMutabilityPlan.class)
   @Column(columnDefinition = "jsonb", nullable = false)
   private Map<String, Map<String, Object>> customAspects = new HashMap<>();
 
