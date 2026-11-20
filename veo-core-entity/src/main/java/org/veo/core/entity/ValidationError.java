@@ -156,9 +156,7 @@ public interface ValidationError {
         .map(attrKey ->
             "* %s: %s"
                 .formatted(
-                    otherDomain
-                        .getElementTypeDefinition(element.getType())
-                        .findTranslation(locale, attrKey),
+                    otherDomain.findTranslation(element.getType(), attrKey, locale),
                     etd.localizeCustomAspectAttributeValue(
                         caType, attrKey, otherAttributes.get(attrKey), locale)))
         .collect(Collectors.joining("\n"));

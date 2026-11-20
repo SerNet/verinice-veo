@@ -19,6 +19,7 @@ package org.veo.core.entity;
 
 import static java.util.function.Function.identity;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -113,6 +114,10 @@ public interface DomainBase extends Nameable, Identifiable, Versioned, DomainBas
         .orElseThrow(() ->
             new NotFoundException(
                 String.format("Domain has no definition for entity type %s", type)));
+  }
+
+  default String findTranslation(ElementType type, String key, Locale locale) {
+    return getElementTypeDefinition(type).findTranslation(locale, key);
   }
 
   @Override
