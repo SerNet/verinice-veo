@@ -98,7 +98,6 @@ public class FirstHitPolicyDecision extends Decision {
         + Optional.ofNullable(result.getDecisiveRule())
             .map(this::getRule)
             .map(Rule::getDescription)
-            .map(TranslatedText::getTranslations)
             .map(t -> t.get(locale))
             .map(" (%s)"::formatted)
             .orElse("");

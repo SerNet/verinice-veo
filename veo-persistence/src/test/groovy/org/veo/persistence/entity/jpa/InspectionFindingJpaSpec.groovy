@@ -96,7 +96,7 @@ class InspectionFindingJpaSpec extends AbstractJpaSpec {
             it.domain == owner.domain
             inspectionId == 'holmes'
             severity == Severity.WARNING
-            taskSummary.translations[EN] == "check it out"
+            taskSummary.get(EN) == "check it out"
             responsible == person
         }
 

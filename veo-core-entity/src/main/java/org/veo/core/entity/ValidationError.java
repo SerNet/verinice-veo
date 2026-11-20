@@ -84,7 +84,7 @@ public interface ValidationError {
     return localized(
         "error_attribute_needs_manual_removal",
         List.of(
-            l -> translatedText.getTranslations().get(l),
+            translatedText::get,
             l -> etd.findTranslation(l, attribute),
             _ -> attribute,
             l ->

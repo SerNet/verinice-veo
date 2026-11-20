@@ -81,11 +81,7 @@ public class Inspector {
                 TranslatedText.of(locale ->
                     "%s: %s"
                         .formatted(
-                            domain
-                                .getDecision(e.getKey().getKeyRef())
-                                .getName()
-                                .getTranslations()
-                                .get(locale),
+                            domain.getDecision(e.getKey().getKeyRef()).getName().get(locale),
                             domain
                                 .getDecision(e.getKey().getKeyRef())
                                 .format(e.getValue(), locale, domain))),

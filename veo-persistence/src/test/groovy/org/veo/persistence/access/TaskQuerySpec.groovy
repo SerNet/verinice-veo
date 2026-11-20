@@ -278,19 +278,19 @@ class TaskQuerySpec extends AbstractJpaSpec {
                 with(resultPage()[0]) {
                     type() == TaskType.INSPECTION_FINDING
                     element().name == "process a"
-                    summary().translations[EN] == "fix process a error"
+                    summary().get(EN) == "fix process a error"
                     assignee() == null
                 }
                 with(resultPage()[1]) {
                     type() == TaskType.INSPECTION_FINDING
                     element().name == "process b"
                     assignee().name == "person b"
-                    summary().translations[EN] == "fix process b warning"
+                    summary().get(EN) == "fix process b warning"
                 }
                 with(resultPage()[2]) {
                     type() == TaskType.INSPECTION_FINDING
                     element().name == "process a"
-                    summary().translations[EN] == "check out process a hint"
+                    summary().get(EN) == "check out process a hint"
                     assignee().name == "person a"
                 }
             }
@@ -304,7 +304,7 @@ class TaskQuerySpec extends AbstractJpaSpec {
                 with(resultPage()[0]) {
                     type() == TaskType.INSPECTION_FINDING
                     element().name == "process a"
-                    summary().translations[EN] == "check out process a hint"
+                    summary().get(EN) == "check out process a hint"
                     assignee().name == "person a"
                 }
             }

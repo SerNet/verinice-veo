@@ -20,6 +20,7 @@ package org.veo.core.entity;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -44,6 +45,11 @@ public class TranslatedText {
   }
 
   @Getter @NotNull @JsonValue @Singular private Map<Locale, String> translations;
+
+  public String get(Locale locale) {
+    return Optional.ofNullable(translations.get(locale))
+        .orElseGet(() -> translations.get(Locale.ENGLISH));
+  }
 
   @JsonCreator
   public TranslatedText(Map<Locale, String> themap) {
